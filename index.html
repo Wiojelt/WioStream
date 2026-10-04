@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WioStream · by Wiojelt</title>
+  <meta name="description" content="Yeni nesil fütüristik medya ekosistemi. CloudStream ve Nuvio / Stremio için Türkçe film, dizi ve canlı spor eklentileri.">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Space Grotesk & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            cyber: {
+              cyan: '#00f0ff',
+              magenta: '#ff007f',
+              purple: '#7928ca',
+              green: '#00ff88',
+              yellow: '#ffe600',
+              dark: '#06080F',
+              card: '#0D111E',
+              border: '#1F293D'
+            }
+          },
+          animation: {
+            'glow-pulse': 'glow 3s infinite alternate',
+            'float': 'float 6s ease-in-out infinite',
+            'radar': 'radar 4s linear infinite',
+          },
+          keyframes: {
+            glow: {
+              '0%': { filter: 'drop-shadow(0 0 15px rgba(0, 240, 255, 0.4))' },
+              '100%': { filter: 'drop-shadow(0 0 35px rgba(121, 40, 202, 0.7))' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            radar: {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar & Cyber UI Enhancements */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #06080F; }
+    ::-webkit-scrollbar-thumb { background: #1F293D; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
+
+    .cyber-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    .cyber-radial {
+      background: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.12) 0%, rgba(121, 40, 202, 0.06) 40%, transparent 70%);
+    }
+
+    .glass-card {
+      background: rgba(13, 17, 30, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 30px -10px rgba(0, 240, 255, 0.2);
+    }
+
+    .neon-border {
+      position: relative;
+    }
+    .neon-border::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(0,240,255,0.6), rgba(255,0,127,0.4), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-cyber-dark text-slate-100 min-h-screen cyber-grid cyber-radial selection:bg-cyber-cyan selection:text-black relative overflow-x-hidden">
+
+  <!-- Background Particle Grid Canvas -->
+  <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+  <!-- Ambient Glowing Orbs -->
+  <div class="fixed top-0 left-1/4 w-96 h-96 bg-cyber-cyan/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+  <div class="fixed top-1/3 right-1/4 w-96 h-96 bg-cyber-purple/15 rounded-full blur-[150px] pointer-events-none z-0"></div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+
+    <!-- Top Status Bar & HUD -->
+    <header class="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-white/5">
+      <div class="flex items-center gap-3">
+        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-cyan to-cyber-purple p-[1px]">
+          <div class="w-full h-full bg-cyber-dark rounded-[11px] flex items-center justify-center">
+            <i data-lucide="zap" class="w-5 h-5 text-cyber-cyan"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">WioStream</span>
+            <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-cyber-cyan">v2.4</span>
+          </div>
+          <p class="text-xs font-mono text-slate-400">ENGINEERED BY <a href="https://github.com/Wiojelt" target="_blank" class="text-white hover:text-cyber-cyan underline underline-offset-2">WIOJELT</a></p>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Badges -->
+      <div class="flex items-center gap-2 sm:gap-4 font-mono text-xs">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyber-card/80 border border-white/5">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-green opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-cyber-green"></span>
+          </span>
+          <span class="text-slate-300">CORE: ONLINE</span>
+        </div>
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyber-card/80 border border-white/5 text-slate-400">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyber-cyan"></i>
+          <span>CLIENT-SIDE SCRACH</span>
+        </div>
+        <a href="https://github.com/Wiojelt" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i>
+          <span class="hidden md:inline">GitHub</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Hero Title -->
+    <section class="text-center pt-12 pb-8 max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono font-semibold mb-6 animate-pulse">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyber-cyan"></span>
+        HİBRİT YAYIN VE MEDYA EKOSİSTEMİ
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+        Sonsuz Medya. <br class="hidden sm:block">
+        <span class="bg-gradient-to-r from-cyber-cyan via-slate-100 to-cyber-magenta bg-clip-text text-transparent">Sıfır Kesinti & Reklam.</span>
+      </h1>
+      <p class="text-base sm:text-lg text-slate-400 leading-relaxed font-light">
+        CloudStream ve Nuvio / Stremio için geliştirilmiş yüksek performanslı Türkçe sinema, yabancı dizi ve kesintisiz canlı spor sağlayıcıları.
+      </p>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- DUAL MODE SWITCHER (NUVIO <---> CLOUDSTREAM) -->
+    <!-- ============================================== -->
+    <section class="max-w-2xl mx-auto my-8">
+      <div class="p-1.5 rounded-2xl bg-cyber-card/90 border border-white/10 shadow-2xl relative flex items-center justify-between">
+        
+        <!-- CloudStream Tab Button -->
+        <button id="tab-cloudstream" onclick="switchPlatform('cloudstream')" 
+          class="flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-white bg-gradient-to-r from-cyber-cyan/20 to-cyber-purple/30 border border-cyber-cyan/50 shadow-[0_0_20px_rgba(0,240,255,0.25)]">
+          <i data-lucide="layers" class="w-4 h-4 text-cyber-cyan"></i>
+          <span>CloudStream 3</span>
+          <span class="hidden sm:inline-block text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyber-cyan/20 text-cyber-cyan ml-1">Önerilen</span>
+        </button>
+
+        <!-- Nuvio / Stremio Tab Button -->
+        <button id="tab-nuvio" onclick="switchPlatform('nuvio')" 
+          class="flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-slate-400 hover:text-white border border-transparent">
+          <i data-lucide="tv" class="w-4 h-4 text-cyber-magenta"></i>
+          <span>Nuvio & Stremio</span>
+          <span class="hidden sm:inline-block text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-white/5 text-slate-400 ml-1">Eklenti</span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- PLATFORM CONTENT 1: CLOUDSTREAM 3              -->
+    <!-- ============================================== -->
+    <div id="panel-cloudstream" class="transition-all duration-300 block">
+
+      <!-- Hero Banner for CloudStream -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 border border-cyber-cyan/30 relative overflow-hidden">
+        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-cyber-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+          <div>
+            <div class="flex items-center gap-2 text-cyber-cyan text-xs font-mono uppercase tracking-wider mb-2">
+              <i data-lucide="cpu" class="w-4 h-4"></i>
+              <span>Cihaz İçi Yerel Kazıma (Client-Side)</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">CloudStream 3 Eklenti Deposu</h2>
+            <p class="text-sm text-slate-400 max-w-xl">
+              Sunucu engellemelerine takılmayan, doğrudan telefon ve Android TV'nizde çalışan yerel eklentiler. Reklamsız, hızlı ve 4K/1080p doğrudan akış.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3 w-full md:w-auto">
+            <a href="https://cloudstream.cf" target="_blank" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white font-medium text-sm transition-all">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>APK İndir</span>
+            </a>
+            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/TurkSinema/builds/repo.json', 'CloudStream Ana Depo URL')" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-cyber-cyan text-black hover:bg-cyber-cyan/90 font-semibold text-sm transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              <span>Depoyu Kopyala</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CloudStream Repositories Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Repo 1: TurkSinema / WioSinema -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center">
+                <i data-lucide="film" class="w-5 h-5 text-cyber-cyan"></i>
+              </div>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">AKTİF</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">TurkSinema Deposu</h3>
+            <p class="text-xs text-slate-400 mb-4">HDFilmCehennemi, DiziPal, DiziBox, FilmMakinesi, JetFilmizle, SezonlukDizi ve 25+ sinema sağlayıcısı.</p>
+          </div>
+          <div class="space-y-2 pt-4 border-t border-white/5">
+            <a href="cloudstreamrepo://raw.githubusercontent.com/Wiojelt/TurkSinema/builds/repo.json" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-cyber-cyan/15 hover:bg-cyber-cyan/25 text-cyber-cyan border border-cyber-cyan/30 text-xs font-semibold transition-all">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>Doğrudan Uygulamaya Ekle</span>
+            </a>
+            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/TurkSinema/builds/repo.json', 'TurkSinema Deposu')" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-all">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>URL'yi Kopyala</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Repo 2: TurkSpor / WioSpor -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyber-green/10 border border-cyber-green/30 flex items-center justify-center">
+                <i data-lucide="trophy" class="w-5 h-5 text-cyber-green"></i>
+              </div>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CANLI 1080P</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">TurkSpor Deposu</h3>
+            <p class="text-xs text-slate-400 mb-4">SelcukSports, Taraftarium24, InatTV, RecTV, NetVGold, Kool TV, TRGoals canlı spor ve TV kanalları.</p>
+          </div>
+          <div class="space-y-2 pt-4 border-t border-white/5">
+            <a href="cloudstreamrepo://raw.githubusercontent.com/Wiojelt/TurkSpor/builds/repo.json" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-cyber-green/15 hover:bg-cyber-green/25 text-cyber-green border border-cyber-green/30 text-xs font-semibold transition-all">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>Doğrudan Uygulamaya Ekle</span>
+            </a>
+            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/TurkSpor/builds/repo.json', 'TurkSpor Deposu')" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-all">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>URL'yi Kopyala</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Repo 3: Test Deposu & StbTV -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 flex items-center justify-center">
+                <i data-lucide="flask-conical" class="w-5 h-5 text-purple-400"></i>
+              </div>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">v2 DINAMİK</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">Test & StbTV Deposu</h3>
+            <p class="text-xs text-slate-400 mb-4">StbTV (Stalker Portalları, Dinamik Token Yenilemeli Canlı TV), SeyirTURK ve WioDB ultra hızlı test sağlayıcıları.</p>
+          </div>
+          <div class="space-y-2 pt-4 border-t border-white/5">
+            <a href="cloudstreamrepo://raw.githubusercontent.com/Wiojelt/test/builds/repo.json" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-400 border border-purple-500/30 text-xs font-semibold transition-all">
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>Doğrudan Uygulamaya Ekle</span>
+            </a>
+            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/test/builds/repo.json', 'Test & StbTV Deposu')" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-all">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>URL'yi Kopyala</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CloudStream 3-Step Setup Guide -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8">
+        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+          <i data-lucide="help-circle" class="w-5 h-5 text-cyber-cyan"></i>
+          <span>CloudStream 3 Kurulum Kılavuzu (2 Dakika)</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+            <div class="text-cyber-cyan font-mono text-2xl font-bold mb-2">01</div>
+            <h4 class="font-semibold text-white text-sm mb-1">Uygulamayı İndir</h4>
+            <p class="text-xs text-slate-400">Android telefon veya Android TV için resmi CloudStream 3 APK dosyasını indirip yükleyin.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+            <div class="text-cyber-cyan font-mono text-2xl font-bold mb-2">02</div>
+            <h4 class="font-semibold text-white text-sm mb-1">Depo Bağlantısını Ekle</h4>
+            <p class="text-xs text-slate-400">Ayarlar > Eklentiler > Depo Ekle bölümüne girin. Yukarıdaki butonlardan depoyu tek tıkla ekleyin veya linki yapıştırın.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+            <div class="text-cyber-cyan font-mono text-2xl font-bold mb-2">03</div>
+            <h4 class="font-semibold text-white text-sm mb-1">Eklentileri İndir ve İzle</h4>
+            <p class="text-xs text-slate-400">Depo içindeki eklentilerden istediklerinizi "Kur" düğmesine basarak etkinleştirin. Tüm içerik anında hazır!</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- PLATFORM CONTENT 2: NUVIO & STREMIO           -->
+    <!-- ============================================== -->
+    <div id="panel-nuvio" class="transition-all duration-300 hidden">
+
+      <!-- Hero Banner for Nuvio / Stremio -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 border border-cyber-magenta/30 relative overflow-hidden">
+        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-cyber-magenta/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+          <div>
+            <div class="flex items-center gap-2 text-cyber-magenta text-xs font-mono uppercase tracking-wider mb-2">
+              <i data-lucide="cloud-lightning" class="w-4 h-4"></i>
+              <span>Stremio & Nuvio Addon Protocol</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Nuvio & Stremio Entegrasyonu</h2>
+            <p class="text-sm text-slate-400 max-w-xl">
+              Web, iOS, PC, Mac, Android ve Akıllı TV'lerde çalışan Stremio ve Nuvio için Türkçe dizi, film ve katalog akış çözücüsü.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3 w-full md:w-auto">
+            <a href="https://stremio.com" target="_blank" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white font-medium text-sm transition-all">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>Stremio İndir</span>
+            </a>
+            <a href="stremio://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-cyber-magenta text-white hover:bg-cyber-magenta/90 font-semibold text-sm transition-all shadow-[0_0_20px_rgba(255,0,127,0.3)]">
+              <i data-lucide="play" class="w-4 h-4"></i>
+              <span>Stremio'ya Otomatik Kur</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nuvio / Stremio Setup Card & Manifest Link -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Manifest Card -->
+        <div class="md:col-span-2 glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-cyber-magenta/10 border border-cyber-magenta/30 flex items-center justify-center">
+                <i data-lucide="code" class="w-5 h-5 text-cyber-magenta"></i>
+              </div>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-cyber-magenta/10 text-cyber-magenta border border-cyber-magenta/20">30 KATALOG AKTİF</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Eklenti Manifest Bağlantısı</h3>
+            <p class="text-xs text-slate-400 mb-4">
+              Nuvio veya Stremio Addon arama kutusuna doğrudan yapıştırabileceğiniz hazır yapılandırılmış manifest linki:
+            </p>
+            <div class="p-3.5 rounded-xl bg-black/60 border border-white/10 font-mono text-xs text-cyber-cyan break-all flex items-center justify-between gap-3 mb-4">
+              <span>https://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json</span>
+              <button onclick="copyToClipboard('https://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json', 'Stremio Manifest URL')" class="shrink-0 p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3 pt-4 border-t border-white/5">
+            <a href="stremio://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json" class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-cyber-magenta/20 hover:bg-cyber-magenta/30 text-cyber-magenta border border-cyber-magenta/40 text-xs font-semibold transition-all">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              <span>Tek Tıkla Stremio Kurulumu</span>
+            </a>
+            <button onclick="copyToClipboard('https://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json', 'Manifest Linki')" class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-medium transition-all">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              <span>Linki Kopyala</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- QR Code TV Pairing Card -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+          <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-3">
+            <i data-lucide="qr-code" class="w-5 h-5 text-cyber-cyan"></i>
+          </div>
+          <h4 class="font-bold text-white text-sm mb-1">Android TV / Web QR</h4>
+          <p class="text-xs text-slate-400 mb-4">Telefon kameranızla tarayın, linki TV veya cihazınıza anında aktarın.</p>
+          <div class="p-3 bg-white rounded-xl shadow-lg mb-3">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https%3A%2F%2Fcvnflix.onrcvndev.com.tr%2FPtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg%2Fmanifest.json" alt="QR Code" class="w-28 h-28 object-contain">
+          </div>
+          <span class="text-[10px] font-mono text-slate-500">STREMIO COMPATIBLE</span>
+        </div>
+
+      </div>
+
+      <!-- Nuvio / Stremio Setup Guide -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8">
+        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+          <i data-lucide="help-circle" class="w-5 h-5 text-cyber-magenta"></i>
+          <span>Nuvio & Stremio Kurulum Kılavuzu (3 Adım)</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+            <div class="text-cyber-magenta font-mono text-2xl font-bold mb-2">01</div>
+            <h4 class="font-semibold text-white text-sm mb-1">Stremio / Nuvio Başlatın</h4>
+            <p class="text-xs text-slate-400">Uygulamayı açın ve sol menüden Eklentiler (Addons / Topluluk Eklentileri) bölümüne geçin.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+            <div class="text-cyber-magenta font-mono text-2xl font-bold mb-2">02</div>
+            <h4 class="font-semibold text-white text-sm mb-1">Manifest URL'sini Yapıştırın</h4>
+            <p class="text-xs text-slate-400">Arama çubuğuna yukarıdaki manifest linkini yapıştırın veya 'Tek Tıkla Kur' butonuna basın.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+            <div class="text-cyber-magenta font-mono text-2xl font-bold mb-2">03</div>
+            <h4 class="font-semibold text-white text-sm mb-1">Türkçe Kaynaklarla İzleyin</h4>
+            <p class="text-xs text-slate-400">Filmlerin ve dizilerin altında HDFilmCehennemi, Dizipal, DDizi ve AsyaWatch akışları otomatik listelenir.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- BENTO GRID: CAPABILITIES & ARCHITECTURE        -->
+    <!-- ============================================== -->
+    <section class="mt-16">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">Yeni Nesil Medya Mimarisi</h2>
+        <p class="text-sm text-slate-400 max-w-lg mx-auto">Geleneksel web sitelerindeki reklam ve yönlendirmeleri baypas eden temiz veri akışı.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Bento 1: Canlı Spor & TV -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i data-lucide="radio" class="w-6 h-6 text-emerald-400"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Dinamik Canlı TV & Spor</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Stalker Stb ve IPTV portallarında token düşmelerini engelleyen arka plan otomatik el sıkışması (handshake) motoru.
+          </p>
+          <div class="flex items-center gap-2 font-mono text-[11px] text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>209+ TÜRK KANALI AKTİF</span>
+          </div>
+        </div>
+
+        <!-- Bento 2: 0-Sunucu / P2P Kazıma -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+          <div class="w-12 h-12 rounded-2xl bg-cyber-cyan/10 border border-cyber-cyan/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i data-lucide="shield" class="w-6 h-6 text-cyber-cyan"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Sıfır Sunucu Bağımlılığı</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            CloudStream eklentileri doğrudan kullanıcının cihazında çalışır. Merkezi sunucu çökmesi veya IP engeli riski yoktur.
+          </p>
+          <div class="flex items-center gap-2 font-mono text-[11px] text-cyber-cyan">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+            <span>DECENTRALIZED SCRAPING</span>
+          </div>
+        </div>
+
+        <!-- Bento 3: Otomatik Çözücü & Header Enjeksiyonu -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+          <div class="w-12 h-12 rounded-2xl bg-cyber-purple/10 border border-cyber-purple/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i data-lucide="terminal" class="w-6 h-6 text-purple-400"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Otomatik Header Bypass</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Rapidrame, Pilavyer ve video CDN'lerinin koyduğu Referer ve User-Agent kısıtlamaları otomatik olarak çözülür.
+          </p>
+          <div class="flex items-center gap-2 font-mono text-[11px] text-purple-400">
+            <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+            <span>AUTO REFERER / UA INJECT</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-20 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="text-slate-300 font-semibold">WioStream</span>
+        <span>·</span>
+        <span>DESIGNED & MAINTAINED BY <a href="https://github.com/Wiojelt" target="_blank" class="text-cyber-cyan hover:underline">WIOJELT</a></span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://github.com/Wiojelt/test" target="_blank" class="hover:text-slate-300 transition-colors">Test Repo</a>
+        <a href="https://github.com/Wiojelt/TurkSinema" target="_blank" class="hover:text-slate-300 transition-colors">TurkSinema</a>
+        <a href="https://github.com/Wiojelt/TurkSpor" target="_blank" class="hover:text-slate-300 transition-colors">TurkSpor</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification Modal -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card border border-cyber-cyan/50 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+      <div class="w-6 h-6 rounded-lg bg-cyber-cyan/20 flex items-center justify-center text-cyber-cyan">
+        <i data-lucide="check" class="w-4 h-4"></i>
+      </div>
+      <div>
+        <p id="toast-title" class="font-bold text-xs text-white">Başarılı</p>
+        <p id="toast-msg" class="text-[11px] text-slate-300">Bağlantı panoya kopyalandı!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Logic & Canvas Animation -->
+  <script>
+    // Lucide Icons Init
+    lucide.createIcons();
+
+    // Platform Switcher Function
+    function switchPlatform(platform) {
+      const panelCS = document.getElementById('panel-cloudstream');
+      const panelNuvio = document.getElementById('panel-nuvio');
+      const btnCS = document.getElementById('tab-cloudstream');
+      const btnNuvio = document.getElementById('tab-nuvio');
+
+      if (platform === 'cloudstream') {
+        panelCS.classList.remove('hidden');
+        panelCS.classList.add('block');
+        panelNuvio.classList.add('hidden');
+        panelNuvio.classList.remove('block');
+
+        // Style buttons
+        btnCS.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-white bg-gradient-to-r from-cyber-cyan/20 to-cyber-purple/30 border border-cyber-cyan/50 shadow-[0_0_20px_rgba(0,240,255,0.25)]";
+        btnNuvio.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-slate-400 hover:text-white border border-transparent";
+      } else {
+        panelNuvio.classList.remove('hidden');
+        panelNuvio.classList.add('block');
+        panelCS.classList.add('hidden');
+        panelCS.classList.remove('block');
+
+        // Style buttons
+        btnNuvio.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-white bg-gradient-to-r from-cyber-magenta/20 to-cyber-purple/30 border border-cyber-magenta/50 shadow-[0_0_20px_rgba(255,0,127,0.25)]";
+        btnCS.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-slate-400 hover:text-white border border-transparent";
+      }
+      lucide.createIcons();
+    }
+
+    // Toast Notification & Clipboard Copy
+    function copyToClipboard(text, label) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(label || 'Bağlantı', 'Panoya başarıyla kopyalandı!');
+      }).catch(() => {
+        const input = document.createElement('input');
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToast(label || 'Bağlantı', 'Panoya kopyalandı!');
+      });
+    }
+
+    function showToast(title, msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-msg').innerText = msg;
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+
+    // Subtle Canvas Star/Grid Animation
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, stars = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      stars = [];
+      const count = Math.floor((width * height) / 14000);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.5,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          alpha: Math.random() * 0.7 + 0.2
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      for (let s of stars) {
+        s.x += s.vx;
+        s.y += s.vy;
+        if (s.x < 0) s.x = width;
+        if (s.x > width) s.x = 0;
+        if (s.y < 0) s.y = height;
+        if (s.y > height) s.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 240, 255, ${s.alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+  </script>
+</body>
+</html>
