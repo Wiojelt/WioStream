@@ -1,639 +1,122 @@
-<!DOCTYPE html>
-<html lang="tr" class="dark scroll-smooth">
+<!doctype html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WioStream · by Wiojelt</title>
-  <meta name="description" content="Yeni nesil fütüristik medya ekosistemi. CloudStream ve Nuvio / Stremio için Türkçe film, dizi ve canlı spor eklentileri.">
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Fonts: Space Grotesk & JetBrains Mono -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11130f">
+  <meta name="description" content="WioStream: CloudStream, Nuvio ve Stremio için güncel Türkçe eklenti merkezi. WioLand kurulumu, manifest bağlantısı ve adım adım yardım.">
+  <title>WioStream — İzlemeye giden kısa yol</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Space Grotesk"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            cyber: {
-              cyan: '#00f0ff',
-              magenta: '#ff007f',
-              purple: '#7928ca',
-              green: '#00ff88',
-              yellow: '#ffe600',
-              dark: '#06080F',
-              card: '#0D111E',
-              border: '#1F293D'
-            }
-          },
-          animation: {
-            'glow-pulse': 'glow 3s infinite alternate',
-            'float': 'float 6s ease-in-out infinite',
-            'radar': 'radar 4s linear infinite',
-          },
-          keyframes: {
-            glow: {
-              '0%': { filter: 'drop-shadow(0 0 15px rgba(0, 240, 255, 0.4))' },
-              '100%': { filter: 'drop-shadow(0 0 35px rgba(121, 40, 202, 0.7))' }
-            },
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-10px)' }
-            },
-            radar: {
-              '0%': { transform: 'rotate(0deg)' },
-              '100%': { transform: 'rotate(360deg)' }
-            }
-          }
-        }
-      }
-    }
-  </script>
-
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Custom Scrollbar & Cyber UI Enhancements */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #06080F; }
-    ::-webkit-scrollbar-thumb { background: #1F293D; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
-
-    .cyber-grid {
-      background-size: 40px 40px;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    }
-
-    .cyber-radial {
-      background: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.12) 0%, rgba(121, 40, 202, 0.06) 40%, transparent 70%);
-    }
-
-    .glass-card {
-      background: rgba(13, 17, 30, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    .glass-card:hover {
-      border-color: rgba(0, 240, 255, 0.35);
-      box-shadow: 0 0 30px -10px rgba(0, 240, 255, 0.2);
-    }
-
-    .neon-border {
-      position: relative;
-    }
-    .neon-border::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(0,240,255,0.6), rgba(255,0,127,0.4), transparent);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
+    :root{--ink:#f1f0e9;--muted:#9b9d92;--bg:#11130f;--panel:#191b16;--line:#34372f;--lime:#d3ff63;--orange:#ff7956;--mono:'DM Mono',monospace;--sans:'Manrope',Arial,sans-serif;--wrap:1160px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit}::selection{color:var(--bg);background:var(--lime)}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E")}
+    .wrap{width:min(var(--wrap),calc(100% - 64px));margin-inline:auto}.mono,.eyebrow,.nav-links,.tag,.step-no,.tiny{font-family:var(--mono);letter-spacing:.045em}.eyebrow{font-size:11px;text-transform:uppercase;color:var(--lime);display:flex;align-items:center;gap:10px}.eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 15px currentColor}
+    .topline{background:var(--lime);color:#171a12;font-size:11px;letter-spacing:.07em;text-transform:uppercase;padding:10px 16px;text-align:center;font-family:var(--mono)}.topline strong{font-weight:500}.topline a{border-bottom:1px solid #52662b;margin-left:8px}
+    header{height:76px;border-bottom:1px solid #ffffff12;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.06em;font-size:20px}.brand-mark{width:29px;height:29px;display:grid;place-items:center;color:#11130f;background:var(--lime);border-radius:50% 50% 50% 8px;font-size:16px;transform:rotate(-8deg);overflow:hidden}.brand-mark img{width:100%;height:100%;object-fit:cover;border-radius:inherit;transform:rotate(8deg)}.nav-links{display:flex;align-items:center;gap:32px;color:#b2b3aa;font-size:11px;text-transform:uppercase}.nav-links a{transition:color .2s}.nav-links a:hover{color:var(--lime)}.nav-action{border:1px solid #ffffff35;padding:11px 15px;border-radius:4px;color:var(--ink)!important}.nav-action:hover{border-color:var(--lime);color:var(--lime)!important}.menu-button{display:none;background:none;border:0;font-size:23px}
+    .hero{min-height:660px;padding:70px 0 54px;position:relative;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:24px}.hero-copy{position:relative;z-index:2;padding-bottom:28px}.hero h1{font-size:clamp(58px,8vw,112px);line-height:.91;letter-spacing:-.09em;margin:24px 0 26px;font-weight:600;max-width:760px}.hero h1 em{color:var(--lime);font-style:normal}.hero-lede{font-size:17px;line-height:1.75;color:#b3b4aa;max-width:470px}.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}.button{min-height:49px;padding:0 19px;display:inline-flex;align-items:center;justify-content:center;gap:12px;border:1px solid transparent;border-radius:3px;font-size:12px;font-weight:700;transition:transform .2s,background .2s,border-color .2s}.button:hover{transform:translateY(-2px)}.button-primary{background:var(--lime);color:#14170e}.button-primary:hover{background:#e0ff91}.button-quiet{border-color:#ffffff35;color:var(--ink)}.button-quiet:hover{border-color:var(--lime);color:var(--lime)}.button .arrow{font-size:17px;font-weight:400}
+    .hero-art{height:470px;position:relative;display:grid;place-items:center;perspective:900px}.orbit{position:absolute;width:min(38vw,430px);aspect-ratio:1;border:1px solid #d3ff6330;border-radius:50%;transform:rotateX(66deg) rotate(-28deg);animation:orbit 24s linear infinite}.orbit:before,.orbit:after{content:"";position:absolute;inset:14%;border:1px solid #ffffff19;border-radius:50%;transform:rotate(61deg)}.orbit:after{inset:27%;border-color:#ff79563b;transform:rotate(-40deg)}.orb{width:min(29vw,310px);aspect-ratio:1;border-radius:50%;position:relative;background:radial-gradient(circle at 30% 25%,#efffc2 0,#bdf37b 8%,#69a857 21%,#315d51 40%,#203a37 58%,#151d1c 72%);box-shadow:inset -34px -36px 70px #080c0b,0 0 70px #9cce5633;animation:orbfloat 7s ease-in-out infinite;overflow:hidden}.orb:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(154deg,transparent 0 18px,#d4ff6330 19px,#d4ff6312 20px,transparent 24px 39px);mix-blend-mode:screen;transform:rotate(-12deg) scale(1.3);filter:blur(2px)}.orb:after{content:"";position:absolute;width:40%;height:115%;left:54%;top:-5%;border-radius:50%;background:#11130f;opacity:.58;filter:blur(21px);transform:rotate(28deg)}.art-label{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:#adafa2;text-transform:uppercase}.label-top{right:5%;top:12%}.label-bottom{left:0;bottom:16%}.art-cross{position:absolute;left:18%;top:20%;font-size:24px;color:var(--orange)}.art-coord{position:absolute;right:1%;bottom:13%;color:var(--lime);font-family:var(--mono);font-size:10px}
+    .scroll-cue{position:absolute;left:0;bottom:24px;display:flex;align-items:center;gap:12px;color:#a4a69b;font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}.scroll-icon{width:34px;height:34px;border:1px solid #ffffff35;border-radius:50%;display:grid;place-items:center;color:var(--lime);animation:bob 1.7s ease-in-out infinite}.scroll-icon span{font-size:17px}
+    .section{padding:104px 0;border-top:1px solid #ffffff14}.section-head{display:flex;align-items:end;justify-content:space-between;gap:40px;margin-bottom:40px}.section h2{font-size:clamp(38px,5vw,62px);line-height:1;letter-spacing:-.075em;font-weight:600;margin:16px 0 0}.section-intro{max-width:360px;color:var(--muted);font-size:13px;line-height:1.8;margin:0}.notice{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;background:#26271e;border:1px solid #d3ff6345;padding:21px 24px;margin:0 0 26px}.notice-icon{font-size:22px;color:var(--lime)}.notice strong{display:block;font-size:13px;margin-bottom:4px}.notice p{margin:0;color:#b5b6ac;font-size:12px;line-height:1.6}.notice .mono{color:var(--lime);font-size:11px;white-space:nowrap}
+    .platform-bar{display:flex;gap:8px;padding:6px;background:#191b16;border:1px solid var(--line);width:max-content;max-width:100%;margin-bottom:25px}.tab{border:0;background:transparent;color:#a7a89e;padding:13px 18px;font-size:12px;cursor:pointer;transition:.2s}.tab[aria-selected="true"]{background:var(--lime);color:#171a12;font-weight:800}.panel[hidden]{display:none}.platform-feature{display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;padding:32px;border:1px solid #ffffff20;background:linear-gradient(112deg,#1d2117,#191b16 60%);position:relative;overflow:hidden}.platform-feature:after{content:"";position:absolute;right:4%;top:-90px;width:310px;height:310px;border:1px solid #d3ff6322;border-radius:50%;box-shadow:0 0 0 35px #d3ff6308,0 0 0 70px #d3ff6305}.feature-copy{position:relative;z-index:1}.platform-feature h3{font-size:26px;letter-spacing:-.05em;margin:13px 0 8px}.platform-feature p{color:#aeb0a5;font-size:13px;line-height:1.7;max-width:560px;margin:0}.feature-actions{position:relative;z-index:1;display:flex;gap:10px;flex-wrap:wrap}.feature-kicker{color:var(--lime);font-size:10px;text-transform:uppercase;font-family:var(--mono);letter-spacing:.08em}
+    .resource-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.resource{min-height:254px;background:var(--panel);border:1px solid #ffffff18;padding:22px;display:flex;flex-direction:column;transition:transform .25s,border-color .25s}.resource:hover{transform:translateY(-4px);border-color:#d3ff6366}.resource-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}.resource-icon{width:37px;height:37px;border:1px solid #d3ff6355;color:var(--lime);display:grid;place-items:center;border-radius:50%;font-size:16px}.tag{font-size:9px;color:#b6b8ac;border:1px solid #ffffff24;padding:6px 8px;text-transform:uppercase}.resource h3{font-size:18px;letter-spacing:-.045em;margin:0 0 8px}.resource p{color:var(--muted);font-size:12px;line-height:1.7;margin:0 0 22px}.resource-bottom{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}.small-btn{border:1px solid #ffffff27;background:transparent;padding:10px 12px;font-size:10px;cursor:pointer;transition:.2s}.small-btn:hover{border-color:var(--lime);color:var(--lime)}.small-btn.primary{background:#d3ff6317;border-color:#d3ff6340;color:var(--lime)}.manifest-card{grid-column:span 2;min-height:250px}.manifest-url{margin:20px 0;padding:14px;background:#10120e;border:1px solid #ffffff1e;color:#d3ff63;font-family:var(--mono);font-size:11px;line-height:1.6;overflow-wrap:anywhere}.qr-card{align-items:center;justify-content:center;text-align:center}.qr-card p{max-width:220px}.qr-frame{padding:8px;background:white;border-radius:4px;margin:3px 0 10px}.qr-frame img{display:block;width:126px;height:126px}.fineprint{color:#77796f;font-size:10px;line-height:1.65;margin-top:14px}
+    .search-row{display:flex;align-items:center;gap:14px;margin:27px 0 12px}.search-row label{font:10px var(--mono);color:#a7a89e;text-transform:uppercase;white-space:nowrap}.search-row input{flex:1;max-width:380px;background:#191b16;border:1px solid #ffffff27;color:var(--ink);padding:13px 14px;font:12px var(--sans);outline:none}.search-row input:focus{border-color:var(--lime)}.search-count{font:10px var(--mono);color:#797b71}.plugin-details{border-top:1px solid #ffffff1c;margin-top:16px;padding-top:12px}.plugin-details summary{cursor:pointer;list-style:none;color:var(--lime);font:10px var(--mono);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}.plugin-details summary::-webkit-details-marker{display:none}.plugin-details summary:after{content:"+";font-size:17px}.plugin-details[open] summary:after{content:"−"}.plugin-details p{margin:12px 0 0;font-size:11px}.plugin-details ul{padding-left:16px;margin:9px 0 0;color:#aeb0a5;font-size:11px;line-height:1.8}.plugin-details li::marker{color:var(--lime)}
+    .timeline{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:46px}.timeline:before{content:"";position:absolute;top:7px;left:4%;right:4%;height:1px;background:linear-gradient(90deg,#77796f,#d3ff63 50%,#ff7956 78%,#ffffff2a)}.timeline-item{position:relative;padding:35px 22px 0 0}.timeline-dot{position:absolute;top:0;left:0;width:14px;height:14px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 5px #d3ff6315}.timeline-item.old .timeline-dot{background:#77796f;box-shadow:0 0 0 5px #77796f20}.timeline-item.build .timeline-dot{background:var(--orange);box-shadow:0 0 0 5px #ff795620}.timeline-item.future .timeline-dot{background:transparent;border:1px solid #ff7956;box-shadow:0 0 0 5px #ff795610}.timeline-state{font:9px var(--mono);text-transform:uppercase;color:var(--lime);letter-spacing:.08em}.timeline-item.old .timeline-state{color:#92948a}.timeline-item.build .timeline-state,.timeline-item.future .timeline-state{color:var(--orange)}.timeline-item h3{font-size:16px;letter-spacing:-.04em;margin:10px 0 7px}.timeline-item p{font-size:11px;line-height:1.7;color:var(--muted);margin:0}.timeline-item .tag{display:inline-block;margin-top:12px}
+    .cover{height:128px;position:relative;overflow:hidden;margin:-22px -22px 18px;background:#23271d}.cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,#11130fbb);pointer-events:none}.cover-word{position:absolute;z-index:1;left:15px;bottom:12px;font:10px var(--mono);text-transform:uppercase;letter-spacing:.16em;color:#f1f0e9}.cover-cinema{background:radial-gradient(ellipse at 75% 25%,#efb86b 0,#7c533a 19%,transparent 20%),linear-gradient(128deg,#20231d 28%,#69634b 28.5%,#3d4432 61%,#a65e43)}.cover-cinema:before{content:"";position:absolute;width:170px;height:170px;right:27px;top:-59px;border:1px solid #f1dfb480;border-radius:50%;box-shadow:0 0 0 18px #f1dfb412,0 0 0 37px #f1dfb40c;animation:slowspin 24s linear infinite}.cover-sport{background:linear-gradient(145deg,#182d27,#355f46 56%,#101a18)}.cover-sport:before{content:"";position:absolute;width:140px;height:180px;left:35%;top:-54px;border-radius:45% 45% 16% 16%;background:linear-gradient(90deg,#d3ff63 0 10%,#5b883a 10% 90%,#d3ff63 90%);transform:rotate(8deg);box-shadow:0 0 60px #a4ea5d55;animation:jersey 5s ease-in-out infinite}.cover-sport:after{content:"";position:absolute;inset:auto 0 0;height:25px;background:repeating-linear-gradient(90deg,#ffffff16 0 2px,transparent 2px 29px)}.cover-anime{background:linear-gradient(135deg,#1c2341,#743f70 52%,#e07560)}.cover-anime:before{content:"";position:absolute;left:44%;top:-22px;width:92px;height:150px;background:linear-gradient(135deg,#e8b284 0 22%,#26263e 23% 44%,#a03d55 45% 63%,#e8b284 64% 100%);clip-path:polygon(36% 0,67% 0,100% 35%,76% 100%,18% 100%,0 35%);transform:rotate(-12deg);filter:drop-shadow(0 8px 16px #0008);animation:portrait 6s ease-in-out infinite}.cover-asya{background:linear-gradient(125deg,#242329,#705747 50%,#ba7654)}.cover-asya:before{content:"";position:absolute;inset:15px 24% 0;border:1px solid #f2d9b7a0;border-bottom:0;border-radius:50% 50% 0 0;box-shadow:0 0 0 17px #f2d9b41b,0 0 0 35px #f2d9b410}.cover-drama{background:linear-gradient(115deg,#44332a,#a85e43 48%,#1e2420)}.cover-drama:before{content:"";position:absolute;left:49%;top:14px;width:58px;height:82px;border:1px solid #f5d0b3;background:linear-gradient(155deg,#efbb8e 0 33%,#302c2a 34% 100%);box-shadow:-40px 17px 0 -1px #815842,35px 7px 0 -1px #c38359;transform:rotate(6deg)}.cover-kids{background:linear-gradient(135deg,#d4a556,#bf7153 46%,#547e72)}.cover-kids:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 28% 38%,#f6e4aa 0 20px,transparent 21px),radial-gradient(circle at 53% 31%,#97c9a3 0 26px,transparent 27px),radial-gradient(circle at 73% 49%,#f2c083 0 18px,transparent 19px),radial-gradient(circle at 45% 83%,#ee9c7a 0 24px,transparent 25px);animation:bubble 7s ease-in-out infinite alternate}.cover-live{background:linear-gradient(130deg,#172728,#25675d 52%,#141c1d)}.cover-live:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 17px,#d3ff632c 18px 19px);clip-path:polygon(0 48%,7% 45%,12% 58%,17% 24%,22% 73%,29% 38%,35% 55%,42% 20%,48% 79%,55% 41%,61% 63%,67% 27%,73% 53%,80% 31%,87% 71%,93% 43%,100% 52%,100% 57%,93% 48%,87% 76%,80% 36%,73% 58%,67% 32%,61% 68%,55% 46%,48% 84%,42% 25%,35% 60%,29% 43%,22% 78%,17% 29%,12% 63%,7% 50%,0 53%);animation:wave 4s ease-in-out infinite alternate}.cover-world{background:linear-gradient(145deg,#1b2c44,#465674 55%,#9d795c)}.cover-world:before{content:"";position:absolute;width:100px;height:100px;left:50%;top:12px;border:1px solid #dde1cd;border-radius:50%;box-shadow:inset -15px -8px 0 #101b3388,0 0 38px #d3ff6355;transform:translateX(-50%);animation:orbfloat 7s ease-in-out infinite}.cover-flow{background:linear-gradient(135deg,#192625,#3d5144,#b27a4c)}.cover-flow:before{content:"";position:absolute;inset:-28px 20% 0;border:1px solid #e1d2b5b0;border-radius:48%;transform:rotate(-27deg);box-shadow:0 0 0 15px #fff1,0 0 0 31px #fff1;animation:slowspin 18s linear infinite}.status-live{border-color:#d3ff6360;color:var(--lime)}.status-soon{border-color:#ff795660;color:#ff9b7e}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}.step{min-height:200px;padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.step-no{font-size:11px;color:var(--lime)}.step h3{font-size:15px;margin:34px 0 9px;letter-spacing:-.03em}.step p{margin:0;color:var(--muted);font-size:12px;line-height:1.75}
+    .manifest-panel{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;background:#191b16;padding:34px;border:1px solid #ffffff19}.manifest-panel h3{font-size:23px;letter-spacing:-.05em;margin:12px 0}.manifest-panel p{color:var(--muted);font-size:13px;line-height:1.75}.manifest-panel .manifest-url{margin:0 0 12px}.manifest-buttons{display:flex;gap:10px;flex-wrap:wrap}.community{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;padding:45px;background:var(--lime);color:#15180f}.community .eyebrow{color:#3d4c1e}.community h2{font-size:clamp(36px,5vw,58px);margin:14px 0 10px;line-height:.98}.community p{font-size:13px;color:#48503b;max-width:490px;line-height:1.75}.community .button{background:#171a12;color:var(--ink)}.community .button:hover{background:#2a3020}
+    footer{padding:28px 0 34px;border-top:1px solid #ffffff18;display:flex;justify-content:space-between;align-items:center;gap:24px;color:#888a80;font-size:10px;font-family:var(--mono)}.footer-links{display:flex;gap:20px}.footer-links a:hover{color:var(--lime)}.toast{position:fixed;right:24px;bottom:24px;z-index:8;background:var(--lime);color:#15180f;padding:13px 18px;font-size:12px;font-weight:700;box-shadow:0 12px 45px #0007;opacity:0;transform:translateY(16px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translateY(0)}
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}.reveal.visible{opacity:1;transform:none}
+    @keyframes orbit{to{transform:rotateX(66deg) rotate(332deg)}}@keyframes orbfloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(2deg)}}@keyframes bob{50%{transform:translateY(5px)}}@keyframes slowspin{to{transform:rotate(360deg)}}@keyframes jersey{50%{transform:rotate(12deg) translateY(-5px)}}@keyframes portrait{50%{transform:rotate(-7deg) translateY(4px)}}@keyframes bubble{to{transform:translate(3px,-4px) scale(1.03)}}@keyframes wave{to{transform:translateX(9px)}}
+    @media(max-width:850px){.wrap{width:min(100% - 40px,var(--wrap))}.hero{min-height:600px;grid-template-columns:1.05fr .75fr}.hero-art{height:390px}.resource-grid{grid-template-columns:repeat(2,1fr)}.manifest-card{grid-column:span 2}.section{padding:80px 0}.nav-links{gap:18px}.nav-action{display:none}.timeline{grid-template-columns:repeat(2,1fr);row-gap:25px}.timeline:before{display:none}.timeline-item{border-top:1px solid #ffffff28;padding-top:22px}.timeline-dot{top:-7px}}
+    @media(max-width:640px){.wrap{width:calc(100% - 36px)}.topline{font-size:9px;padding:9px 10px}.topline a{display:inline-block}.site-header{height:65px}.nav-links{display:none}.menu-button{display:block}.nav-links.open{display:flex;position:absolute;top:105px;left:0;right:0;z-index:7;background:#191b16;padding:24px;flex-direction:column;align-items:flex-start;border-bottom:1px solid var(--line)}.hero{display:flex;flex-direction:column;align-items:stretch;min-height:initial;padding:63px 0 70px;gap:0}.hero-copy{padding:0}.hero h1{font-size:clamp(57px,16vw,88px);margin:20px 0}.hero-lede{font-size:15px;max-width:390px}.hero-art{height:300px;margin-top:10px}.orb{width:220px}.orbit{width:280px}.label-top{right:3%;top:7%}.label-bottom{left:1%;bottom:6%}.art-coord{right:1%;bottom:7%}.scroll-cue{bottom:15px}.section{padding:68px 0}.section-head{display:block;margin-bottom:28px}.section-intro{margin-top:15px}.section h2{font-size:43px}.notice{grid-template-columns:auto 1fr;gap:12px;padding:17px}.notice .mono{grid-column:2;white-space:normal}.platform-bar{width:100%;display:grid;grid-template-columns:1fr 1fr}.tab{padding:12px 6px;font-size:10px}.platform-feature{grid-template-columns:1fr;padding:23px;gap:20px}.platform-feature:after{right:-80px}.feature-actions .button{flex:1}.resource-grid{grid-template-columns:1fr}.resource,.manifest-card{grid-column:auto;min-height:230px}.qr-card{min-height:260px}.steps{grid-template-columns:1fr}.step{min-height:initial}.step h3{margin-top:22px}.manifest-panel{grid-template-columns:1fr;padding:24px}.community{grid-template-columns:1fr;padding:30px 25px}.community .button{justify-self:start}footer{align-items:flex-start;flex-direction:column}.footer-links{flex-wrap:wrap;gap:14px}.search-row{align-items:flex-start;flex-direction:column;gap:8px}.search-row input{width:100%;max-width:none}.timeline{grid-template-columns:1fr;gap:0;margin-left:7px}.timeline-item{border-top:0;border-left:1px solid #ffffff28;margin-left:0;padding:0 0 28px 25px}.timeline-dot{top:0;left:-7px}.timeline-item:last-child{padding-bottom:0}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
   </style>
 </head>
-<body class="bg-cyber-dark text-slate-100 min-h-screen cyber-grid cyber-radial selection:bg-cyber-cyan selection:text-black relative overflow-x-hidden">
-
-  <!-- Background Particle Grid Canvas -->
-  <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
-
-  <!-- Ambient Glowing Orbs -->
-  <div class="fixed top-0 left-1/4 w-96 h-96 bg-cyber-cyan/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
-  <div class="fixed top-1/3 right-1/4 w-96 h-96 bg-cyber-purple/15 rounded-full blur-[150px] pointer-events-none z-0"></div>
-
-  <!-- Main Container -->
-  <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-
-    <!-- Top Status Bar & HUD -->
-    <header class="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-white/5">
-      <div class="flex items-center gap-3">
-        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-cyan to-cyber-purple p-[1px]">
-          <div class="w-full h-full bg-cyber-dark rounded-[11px] flex items-center justify-center">
-            <i data-lucide="zap" class="w-5 h-5 text-cyber-cyan"></i>
-          </div>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">WioStream</span>
-            <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-cyber-cyan">v2.4</span>
-          </div>
-          <p class="text-xs font-mono text-slate-400">ENGINEERED BY <a href="https://github.com/Wiojelt" target="_blank" class="text-white hover:text-cyber-cyan underline underline-offset-2">WIOJELT</a></p>
-        </div>
+<body>
+  <div class="topline"><strong>Kurulum notu</strong> Eski kısa kodları kaldırıp güncel WioLand deposunu ekleyin.<a href="#cloudstream">Nasıl kurulur? ↘</a></div>
+  <header class="wrap site-header">
+    <a class="brand" href="#top" aria-label="WioStream ana sayfa"><span class="brand-mark"><img src="https://github.com/Wiojelt.png?size=96" alt=""></span><span>WioStream</span></a>
+    <nav class="nav-links" id="nav-links" aria-label="Ana menü"><a href="#cloudstream">CloudStream</a><a href="#platforms" data-open-tab="nuvio">Nuvio / Stremio</a><a href="#yardim">Yardım</a><a class="nav-action" href="https://github.com/Wiojelt/WioLand" target="_blank" rel="noopener">WioLand ↗</a></nav>
+    <button class="menu-button" id="menu-button" aria-label="Menüyü aç" aria-expanded="false">☰</button>
+  </header>
+  <main id="top">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <div class="eyebrow">Wiojelt tarafından · Türkçe eklenti merkezi</div>
+        <h1>İzlemeye<br>giden <em>kısa yol.</em></h1>
+        <p class="hero-lede">CloudStream, Nuvio ve Stremio için güncel eklentiler. Tek yerden kur, cihazına göre devam et.</p>
+        <div class="hero-ctas"><a class="button button-primary" href="#cloudstream">Kuruluma başla <span class="arrow">↘</span></a><a class="button button-quiet" href="#platforms" data-open-tab="nuvio">Nuvio & Stremio <span class="arrow">↗</span></a></div>
       </div>
-
-      <!-- Live Telemetry Badges -->
-      <div class="flex items-center gap-2 sm:gap-4 font-mono text-xs">
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyber-card/80 border border-white/5">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-green opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-cyber-green"></span>
-          </span>
-          <span class="text-slate-300">CORE: ONLINE</span>
-        </div>
-        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyber-card/80 border border-white/5 text-slate-400">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyber-cyan"></i>
-          <span>CLIENT-SIDE SCRACH</span>
-        </div>
-        <a href="https://github.com/Wiojelt" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-colors">
-          <i data-lucide="github" class="w-4 h-4"></i>
-          <span class="hidden md:inline">GitHub</span>
-        </a>
-      </div>
-    </header>
-
-    <!-- Hero Title -->
-    <section class="text-center pt-12 pb-8 max-w-3xl mx-auto">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono font-semibold mb-6 animate-pulse">
-        <span class="w-1.5 h-1.5 rounded-full bg-cyber-cyan"></span>
-        HİBRİT YAYIN VE MEDYA EKOSİSTEMİ
-      </div>
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
-        Sonsuz Medya. <br class="hidden sm:block">
-        <span class="bg-gradient-to-r from-cyber-cyan via-slate-100 to-cyber-magenta bg-clip-text text-transparent">Sıfır Kesinti & Reklam.</span>
-      </h1>
-      <p class="text-base sm:text-lg text-slate-400 leading-relaxed font-light">
-        CloudStream ve Nuvio / Stremio için geliştirilmiş yüksek performanslı Türkçe sinema, yabancı dizi ve kesintisiz canlı spor sağlayıcıları.
-      </p>
+      <div class="hero-art" aria-label="WioStream için soyut, yörüngeli gezegen illüstrasyonu" role="img"><div class="orbit"></div><div class="orb"></div><span class="art-label label-top">WioLand / 01</span><span class="art-label label-bottom">Bir kez ekle. Devam et.</span><span class="art-cross">✳</span><span class="art-coord">40° 58′ N&nbsp;&nbsp; 29° 05′ E</span></div>
+      <a class="scroll-cue" href="#cloudstream"><span class="scroll-icon"><span>↓</span></span>Keşfetmek için kaydır</a>
     </section>
 
-    <!-- ============================================== -->
-    <!-- DUAL MODE SWITCHER (NUVIO <---> CLOUDSTREAM) -->
-    <!-- ============================================== -->
-    <section class="max-w-2xl mx-auto my-8">
-      <div class="p-1.5 rounded-2xl bg-cyber-card/90 border border-white/10 shadow-2xl relative flex items-center justify-between">
-        
-        <!-- CloudStream Tab Button -->
-        <button id="tab-cloudstream" onclick="switchPlatform('cloudstream')" 
-          class="flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-white bg-gradient-to-r from-cyber-cyan/20 to-cyber-purple/30 border border-cyber-cyan/50 shadow-[0_0_20px_rgba(0,240,255,0.25)]">
-          <i data-lucide="layers" class="w-4 h-4 text-cyber-cyan"></i>
-          <span>CloudStream 3</span>
-          <span class="hidden sm:inline-block text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyber-cyan/20 text-cyber-cyan ml-1">Önerilen</span>
-        </button>
-
-        <!-- Nuvio / Stremio Tab Button -->
-        <button id="tab-nuvio" onclick="switchPlatform('nuvio')" 
-          class="flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-slate-400 hover:text-white border border-transparent">
-          <i data-lucide="tv" class="w-4 h-4 text-cyber-magenta"></i>
-          <span>Nuvio & Stremio</span>
-          <span class="hidden sm:inline-block text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-white/5 text-slate-400 ml-1">Eklenti</span>
-        </button>
-
+    <section class="section" id="cloudstream"><div class="wrap">
+      <div class="section-head reveal"><div><div class="eyebrow">01 / Android · Android TV</div><h2>CloudStream 3</h2></div><p class="section-intro">Eski TurkSinema ve TurkSpor kurulumlarını kaldır. WioLand, güncel eklenti paketlerine ulaşman için tek başlangıç noktası.</p></div>
+      <div class="notice reveal"><span class="notice-icon">↗</span><div><strong>Önce eski depoları temizle</strong><p>Eski depo ve kısa kodlar yerine WioLand’i ekle. Toplu paket: WioSinema, WioSpor, WioAsya, WioDrama, WioAnime, WioKids ve LiveHub.</p></div><span class="mono">GÜNCEL KOD&nbsp; !megawio</span></div>
+      <div class="platform-bar" id="platforms" role="tablist" aria-label="Kurulum platformu"><button class="tab" role="tab" id="tab-cloudstream" aria-selected="true" aria-controls="panel-cloudstream">CloudStream 3</button><button class="tab" role="tab" id="tab-nuvio" aria-selected="false" aria-controls="panel-nuvio">Nuvio & Stremio</button></div>
+      <div class="panel" id="panel-cloudstream" role="tabpanel" aria-labelledby="tab-cloudstream">
+        <div class="platform-feature reveal"><div class="feature-copy"><span class="feature-kicker">Önerilen kurulum · Tek depo</span><h3>WioLand deposunu ekle</h3><p>CloudStream Beta’nın kırmızı logolu ön sürümü gerekir. Depoyu ekledikten sonra MegaWio eklentisini kur; paket içinden kullanacağın eklentileri seç.</p></div><div class="feature-actions"><a class="button button-quiet" href="https://github.com/recloudstream/cloudstream/releases" target="_blank" rel="noopener">Beta APK <span class="arrow">↗</span></a><button class="button button-primary" data-copy="!megawio">!megawio kopyala</button></div></div>
+        <div class="resource-grid" id="resource-grid">
+          <article class="resource reveal" data-search="wio sinema film dizi tmdb !wiosinema"><div class="cover cover-cinema" aria-hidden="true"><span class="cover-word">Film / Dizi</span></div><div class="resource-top"><span class="resource-icon">◉</span><span class="tag status-live">Aktif</span></div><h3>WioSinema</h3><p>TMDB destekli birleşik film ve dizi keşfi.</p><div class="resource-bottom"><button class="small-btn primary" data-copy="!wiosinema">!wiosinema · kopyala</button></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>CloudStream içinde film ve dizi kaynaklarını tek yerde buluşturur. İçeriği ara, sonuçlardan birini aç ve listelenen kaynaklardan seçim yap.</p><ul><li>TMDB destekli birleşik katalog</li><li>WioLand üzerinden kurulum</li><li>Tekil kısa kod: !wiosinema</li></ul></details></article>
+          <article class="resource reveal" data-search="wio spor canlı tv maç kanal !wiospor"><div class="cover cover-sport" aria-hidden="true"><span class="cover-word">Canlı / Spor</span></div><div class="resource-top"><span class="resource-icon">⌁</span><span class="tag status-live">Aktif</span></div><h3>WioSpor</h3><p>Gruplanmış canlı TV ve spor kanalları; alternatif yayın kaynakları tek ekranda.</p><div class="resource-bottom"><button class="small-btn primary" data-copy="!wiospor">!wiospor · kopyala</button></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>CloudStream’de canlı kanal ve spor yayınlarını açar. Kanalı seçtiğinde bulunan aktif kaynaklar listelenir; ayarlardan kaynak kontrolü ve web bağlantısı yenileme seçenekleri kullanılabilir.</p><ul><li>Mor, Yeşil, Turuncu, Sarı, Mavi ve Yıldız spor grupları</li><li>Ulusal kanallar ve ayrı kanal katalogları</li><li>Tekil kısa kod: !wiospor</li></ul></details></article>
+          <article class="resource reveal" data-search="anime animasyon wioanime"><div class="cover cover-anime" aria-hidden="true"><span class="cover-word">Anime</span></div><div class="resource-top"><span class="resource-icon">✳</span><span class="tag status-live">Aktif</span></div><h3>WioAnime</h3><p>Anime sağlayıcılarını bir araya getiren eklenti.</p><div class="resource-bottom"><span class="tag">WioLand içinden kur</span></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>Anime araması için WioLand’in yüklediği sağlayıcıları kullan. Bazı sağlayıcılar ayrı, bazıları birleşik WioAnime seçeneğinde sunulur.</p><ul><li>Birleşik WioAnime seçeneği</li><li>Sağlayıcılar WioLand’den yüklenir</li><li>Kısa kod: !megawio ile ana depoyu ekle</li></ul></details></article>
+          <article class="resource reveal" data-search="asya dizi kore japon wioasya"><div class="cover cover-asya" aria-hidden="true"><span class="cover-word">Asya Dizileri</span></div><div class="resource-top"><span class="resource-icon">◌</span><span class="tag status-live">Aktif</span></div><h3>WioAsya</h3><p>Asya dizileri için sağlayıcılar ve birleşik arama.</p><div class="resource-bottom"><span class="tag">WioLand içinden kur</span></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>Asya yapımlarını desteklenen eklenti sağlayıcılarında ara; varsa birleşik WioAsya kaynağını seç.</p><ul><li>Asya dizi kaynakları</li><li>Birleşik WioAsya seçeneği</li><li>Kurulum WioLand paketinden yapılır</li></ul></details></article>
+          <article class="resource reveal" data-search="drama netshort wiodrama"><div class="cover cover-drama" aria-hidden="true"><span class="cover-word">Drama</span></div><div class="resource-top"><span class="resource-icon">◫</span><span class="tag status-live">Aktif</span></div><h3>WioDrama</h3><p>DramaDizilerim ve NetShort kaynaklarını bir araya getirir.</p><div class="resource-bottom"><span class="tag">WioLand içinden kur</span></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>Kısa drama ve dizi içeriklerini desteklenen kaynaklardan aç. Uygulamada arama yap, bölüm listesinden istediğini seç.</p><ul><li>DramaDizilerim</li><li>NetShort</li><li>Kurulum WioLand paketinden yapılır</li></ul></details></article>
+          <article class="resource reveal" data-search="çocuk çocuklar çizgi film wiokids"><div class="cover cover-kids" aria-hidden="true"><span class="cover-word">Çocuk / Çizgi Film</span></div><div class="resource-top"><span class="resource-icon">○</span><span class="tag status-live">Aktif</span></div><h3>WioKids</h3><p>Çocuk içerikleri ve çizgi film sağlayıcıları.</p><div class="resource-bottom"><span class="tag">WioLand içinden kur</span></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>WioKids’i depodan kurduktan sonra desteklenen çocuk ve çizgi film kaynakları uygulama aramasında görünür.</p><ul><li>Çocuk içerikleri</li><li>Çizgi film kaynakları</li><li>Kurulum WioLand paketinden yapılır</li></ul></details></article>
+          <article class="resource reveal" data-search="livehub canlı yayın twitch kick youtube rumble"><div class="cover cover-live" aria-hidden="true"><span class="cover-word">Live Hub</span></div><div class="resource-top"><span class="resource-icon">〰</span><span class="tag status-live">Aktif</span></div><h3>LiveHub</h3><p>Twitch, Kick, YouTube Live ve Rumble yayınları.</p><div class="resource-bottom"><span class="tag">WioLand içinden kur</span></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>Canlı yayın platformlarını CloudStream içindeki Live Hub üzerinden aç.</p><ul><li>Twitch</li><li>Kick</li><li>YouTube Live ve Rumble</li></ul></details></article>
+          <article class="resource reveal" data-search="wio cinema yabancı film dizi wiocinema"><div class="cover cover-world" aria-hidden="true"><span class="cover-word">Dünya Sineması</span></div><div class="resource-top"><span class="resource-icon">◎</span><span class="tag status-live">Aktif</span></div><h3>WioCinema</h3><p>Yabancı film ve dizi sağlayıcıları.</p><div class="resource-bottom"><span class="tag">WioLand içinden kur</span></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>Yabancı yapımları desteklenen sağlayıcıların kataloglarında ara ve mevcut kaynaklardan seçim yap.</p><ul><li>Film ve dizi kaynakları</li><li>WioLand paketine dahil</li></ul></details></article>
+          <article class="resource reveal" data-search="pltstream seçkin stabil yayın"><div class="cover cover-flow" aria-hidden="true"><span class="cover-word">PltStream</span></div><div class="resource-top"><span class="resource-icon">⌘</span><span class="tag status-live">Aktif</span></div><h3>PltStream</h3><p>Seçili yayın sağlayıcılarını tek pakette toplar.</p><div class="resource-bottom"><span class="tag">WioLand içinden kur</span></div><details class="plugin-details"><summary>İçeriği gör · özellikler</summary><p>WioLand README’sinde seçkin yayın sağlayıcıları paketi olarak listelenir. Ayrıntılı kaynak dökümü depo içinde tutulur.</p><ul><li>WioLand üzerinden kurulum</li><li>Seçili yayın sağlayıcıları</li></ul></details></article>
+        </div>
+        <div class="manifest-url reveal" style="margin-top:14px">https://raw.githubusercontent.com/Wiojelt/WioLand/builds/repo.json</div>
+        <div class="resource-bottom reveal"><button class="small-btn primary" data-copy="https://raw.githubusercontent.com/Wiojelt/WioLand/builds/repo.json">WioLand depo linkini kopyala</button><a class="small-btn" href="https://github.com/Wiojelt/WioLand" target="_blank" rel="noopener">GitHub deposunu incele ↗</a><a class="small-btn" href="https://github.com/recloudstream/cloudstream/releases" target="_blank" rel="noopener">Resmi Beta sürümleri ↗</a></div>
+        <p class="fineprint">CloudStream Beta indirme sayfası resmi proje sürümlerine yönlendirir. WioLand yükleyicisi, depo bağlantısı ve eklenti paketleri Wiojelt GitHub deposundan gelir.</p>
+        <div class="search-row"><label for="plugin-search">Eklentilerde ara</label><input type="search" id="plugin-search" placeholder="Örn. sinema, canlı spor, anime…" autocomplete="off"><span class="search-count" id="search-count" aria-live="polite"></span></div>
       </div>
-    </section>
-
-    <!-- ============================================== -->
-    <!-- PLATFORM CONTENT 1: CLOUDSTREAM 3              -->
-    <!-- ============================================== -->
-    <div id="panel-cloudstream" class="transition-all duration-300 block">
-
-      <!-- Hero Banner for CloudStream -->
-      <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 border border-cyber-cyan/30 relative overflow-hidden">
-        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-cyber-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
-          <div>
-            <div class="flex items-center gap-2 text-cyber-cyan text-xs font-mono uppercase tracking-wider mb-2">
-              <i data-lucide="cpu" class="w-4 h-4"></i>
-              <span>Cihaz İçi Yerel Kazıma (Client-Side)</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">CloudStream 3 Eklenti Deposu</h2>
-            <p class="text-sm text-slate-400 max-w-xl">
-              Sunucu engellemelerine takılmayan, doğrudan telefon ve Android TV'nizde çalışan yerel eklentiler. Reklamsız, hızlı ve 4K/1080p doğrudan akış.
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-3 w-full md:w-auto">
-            <a href="https://cloudstream.cf" target="_blank" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white font-medium text-sm transition-all">
-              <i data-lucide="download" class="w-4 h-4"></i>
-              <span>APK İndir</span>
-            </a>
-            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/TurkSinema/builds/repo.json', 'CloudStream Ana Depo URL')" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-cyber-cyan text-black hover:bg-cyber-cyan/90 font-semibold text-sm transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)]">
-              <i data-lucide="copy" class="w-4 h-4"></i>
-              <span>Depoyu Kopyala</span>
-            </button>
-          </div>
+      <div class="panel" id="panel-nuvio" role="tabpanel" aria-labelledby="tab-nuvio" hidden>
+        <div class="platform-feature reveal"><div class="feature-copy"><span class="feature-kicker">Nuvio · Stremio · Manifest</span><h3>Wiojelt eklentileri</h3><p>CVNFlix bağlantısını kaldırdım. Burada GitHub’daki Nuvio-Addons deposunda yayınlanan doğru manifestleri bulacaksın.</p></div><div class="feature-actions"><a class="button button-quiet" href="https://github.com/Wiojelt/Nuvio-Addons" target="_blank" rel="noopener">Nuvio eklenti deposu ↗</a><a class="button button-primary" href="https://www.stremio.com/downloads" target="_blank" rel="noopener">Stremio’yu edin ↗</a></div></div>
+        <div class="resource-grid">
+          <article class="resource reveal"><div class="cover cover-cinema" aria-hidden="true"><span class="cover-word">Film / Dizi</span></div><div class="resource-top"><span class="resource-icon">◉</span><span class="tag status-live">Yayınlandı</span></div><h3>WioSinema</h3><p>Film ve dizi eklentisi.</p><div class="manifest-url">https://raw.githubusercontent.com/Wiojelt/Nuvio-Addons/main/manifest.json</div><div class="resource-bottom"><button class="small-btn primary" data-copy="https://raw.githubusercontent.com/Wiojelt/Nuvio-Addons/main/manifest.json">Manifesti kopyala</button></div><details class="plugin-details"><summary>İçeriği gör · kurulum</summary><p>Nuvio veya Stremio’da eklenti ekleme ekranını aç. Manifest adresini yapıştırıp kur.</p><ul><li>Nuvio-Addons deposundaki ana manifest</li><li>Film ve dizi içeriği</li></ul></details></article>
+          <article class="resource reveal"><div class="cover cover-world" aria-hidden="true"><span class="cover-word">Dünya Sineması</span></div><div class="resource-top"><span class="resource-icon">◎</span><span class="tag status-live">Yayınlandı</span></div><h3>WioCinema</h3><p>Yabancı film ve dizi eklentisi.</p><div class="manifest-url">https://raw.githubusercontent.com/Wiojelt/Nuvio-Addons/main/wiocinema/manifest.json</div><div class="resource-bottom"><button class="small-btn primary" data-copy="https://raw.githubusercontent.com/Wiojelt/Nuvio-Addons/main/wiocinema/manifest.json">Manifesti kopyala</button></div><details class="plugin-details"><summary>İçeriği gör · kurulum</summary><p>Nuvio veya Stremio’nun eklenti ekleme alanına manifesti yapıştırıp kur.</p><ul><li>Ayrı manifest</li><li>Yabancı film ve dizi</li></ul></details></article>
+          <article class="resource reveal"><div class="cover cover-sport" aria-hidden="true"><span class="cover-word">Canlı / Spor</span></div><div class="resource-top"><span class="resource-icon">⌁</span><span class="tag status-live">Yayınlandı</span></div><h3>WioSpor</h3><p>Nuvio için canlı spor eklentisi.</p><div class="manifest-url">https://raw.githubusercontent.com/Wiojelt/Nuvio-Addons/live/wiospor/manifest.json</div><div class="resource-bottom"><button class="small-btn primary" data-copy="https://raw.githubusercontent.com/Wiojelt/Nuvio-Addons/live/wiospor/manifest.json">Manifesti kopyala</button></div><details class="plugin-details"><summary>İçeriği gör · kurulum</summary><p>Nuvio eklenti ekleme ekranına bu manifesti ekle.</p><ul><li>Ayrı live manifest</li><li>Canlı spor içeriği</li></ul></details></article>
         </div>
       </div>
+    </div></section>
 
-      <!-- CloudStream Repositories Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
-        <!-- Repo 1: TurkSinema / WioSinema -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-10 h-10 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center">
-                <i data-lucide="film" class="w-5 h-5 text-cyber-cyan"></i>
-              </div>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">AKTİF</span>
-            </div>
-            <h3 class="text-lg font-bold text-white mb-1">TurkSinema Deposu</h3>
-            <p class="text-xs text-slate-400 mb-4">HDFilmCehennemi, DiziPal, DiziBox, FilmMakinesi, JetFilmizle, SezonlukDizi ve 25+ sinema sağlayıcısı.</p>
-          </div>
-          <div class="space-y-2 pt-4 border-t border-white/5">
-            <a href="cloudstreamrepo://raw.githubusercontent.com/Wiojelt/TurkSinema/builds/repo.json" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-cyber-cyan/15 hover:bg-cyber-cyan/25 text-cyber-cyan border border-cyber-cyan/30 text-xs font-semibold transition-all">
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-              <span>Doğrudan Uygulamaya Ekle</span>
-            </a>
-            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/TurkSinema/builds/repo.json', 'TurkSinema Deposu')" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-all">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-              <span>URL'yi Kopyala</span>
-            </button>
-          </div>
-        </div>
+    <section class="section" id="yardim"><div class="wrap"><div class="section-head reveal"><div><div class="eyebrow">02 / Kurulum rehberi</div><h2>Üç adımda hazır.</h2></div><p class="section-intro">Nereden başlayacağını biliyorsan üstteki kısayollar seni doğrudan doğru bağlantıya götürür.</p></div>
+      <div class="steps reveal"><article class="step"><div class="step-no">01 — UYGULAMA</div><h3>CloudStream Beta’yı kur</h3><p>Resmi sürüm sayfasından kırmızı logolu Beta / pre-release APK’yı indirip yükle.</p></article><article class="step"><div class="step-no">02 — DEPO</div><h3>WioLand’i ekle</h3><p>Ayarlar → Eklentiler → Depo Ekle bölümüne <button class="small-btn primary" data-copy="!megawio">!megawio</button> yaz. Gerekirse doğrudan depo bağlantısını kullan.</p></article><article class="step"><div class="step-no">03 — EKLENTİ</div><h3>Paketini seç</h3><p>WioLand deposunda MegaWio eklentisini kur; ardından istediğin paketleri seçip etkinleştir.</p></article></div>
+      <div class="manifest-panel reveal" id="nuvio"><div><div class="eyebrow">Alternatif kurulum</div><h3>Nuvio veya Stremio mu?</h3><p>Kurmak istediğin eklentinin kartını açıp doğru manifest bağlantısını kopyala. Uygulamanın eklenti ekleme ekranına yapıştır.</p></div><div><div class="manifest-url">WioSinema · WioCinema · WioSpor için ayrı manifestler mevcut.</div><div class="manifest-buttons"><a class="small-btn primary" href="https://github.com/Wiojelt/Nuvio-Addons" target="_blank" rel="noopener">Nuvio-Addons deposu ↗</a><a class="small-btn" href="#platforms" data-open-tab="nuvio">Eklenti kartlarına git ↑</a></div></div></div>
+    </div></section>
 
-        <!-- Repo 2: TurkSpor / WioSpor -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-10 h-10 rounded-xl bg-cyber-green/10 border border-cyber-green/30 flex items-center justify-center">
-                <i data-lucide="trophy" class="w-5 h-5 text-cyber-green"></i>
-              </div>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CANLI 1080P</span>
-            </div>
-            <h3 class="text-lg font-bold text-white mb-1">TurkSpor Deposu</h3>
-            <p class="text-xs text-slate-400 mb-4">SelcukSports, Taraftarium24, InatTV, RecTV, NetVGold, Kool TV, TRGoals canlı spor ve TV kanalları.</p>
-          </div>
-          <div class="space-y-2 pt-4 border-t border-white/5">
-            <a href="cloudstreamrepo://raw.githubusercontent.com/Wiojelt/TurkSpor/builds/repo.json" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-cyber-green/15 hover:bg-cyber-green/25 text-cyber-green border border-cyber-green/30 text-xs font-semibold transition-all">
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-              <span>Doğrudan Uygulamaya Ekle</span>
-            </a>
-            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/TurkSpor/builds/repo.json', 'TurkSpor Deposu')" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-all">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-              <span>URL'yi Kopyala</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Repo 3: Test Deposu & StbTV -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-10 h-10 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 flex items-center justify-center">
-                <i data-lucide="flask-conical" class="w-5 h-5 text-purple-400"></i>
-              </div>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">v2 DINAMİK</span>
-            </div>
-            <h3 class="text-lg font-bold text-white mb-1">Test & StbTV Deposu</h3>
-            <p class="text-xs text-slate-400 mb-4">StbTV (Stalker Portalları, Dinamik Token Yenilemeli Canlı TV), SeyirTURK ve WioDB ultra hızlı test sağlayıcıları.</p>
-          </div>
-          <div class="space-y-2 pt-4 border-t border-white/5">
-            <a href="cloudstreamrepo://raw.githubusercontent.com/Wiojelt/test/builds/repo.json" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 text-purple-400 border border-purple-500/30 text-xs font-semibold transition-all">
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-              <span>Doğrudan Uygulamaya Ekle</span>
-            </a>
-            <button onclick="copyToClipboard('https://raw.githubusercontent.com/Wiojelt/test/builds/repo.json', 'Test & StbTV Deposu')" class="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-mono transition-all">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-              <span>URL'yi Kopyala</span>
-            </button>
-          </div>
-        </div>
-
+    <section class="section" id="gelisim"><div class="wrap"><div class="section-head reveal"><div><div class="eyebrow">04 / Eklenti durumları</div><h2>Aktif ve geliştirilenler.</h2></div><p class="section-intro">Eski kurulumlar, şu an kullanılabilenler ve üzerinde çalışılanlar.</p></div>
+      <div class="timeline reveal" aria-label="Wio ürünleri zaman çizelgesi">
+        <article class="timeline-item old"><span class="timeline-dot"></span><div class="timeline-state">Arşiv / devre dışı</div><h3>TurkSinema & TurkSpor</h3><p>Eski depo/kısa kod kurulumları. Çakışma yaşamamak için kaldır; eski kodları kullanma.</p><span class="tag">Kurulum bağlantısı yok</span></article>
+        <article class="timeline-item"><span class="timeline-dot"></span><div class="timeline-state">Şimdi / aktif</div><h3>WioLand + Wio paketleri</h3><p>CloudStream için tek başlangıç noktası. Sinema, spor, anime, Asya, drama, çocuk ve LiveHub paketleri.</p><span class="tag">!megawio</span></article>
+        <article class="timeline-item build"><span class="timeline-dot"></span><div class="timeline-state">Geliştiriliyor</div><h3>WiojeltSpor</h3><p>VIP şifreleri içeren spor eklentisi. Spor, ulusal, dünya, haber ve çocuk kanal grupları.</p><span class="tag">Henüz yayınlanmadı · bağlantı yok</span></article>
+        <article class="timeline-item future"><span class="timeline-dot"></span><div class="timeline-state">İleri hedef</div><h3>WioSpor APK + site</h3><p>Bağımsız WioSpor uygulaması ve ona eşlik eden web sitesi. Şimdilik geliştirme yol haritasında.</p><span class="tag">Gelecek planı</span></article>
       </div>
+    </div></section>
 
-      <!-- CloudStream 3-Step Setup Guide -->
-      <div class="glass-card rounded-3xl p-6 sm:p-8">
-        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-          <i data-lucide="help-circle" class="w-5 h-5 text-cyber-cyan"></i>
-          <span>CloudStream 3 Kurulum Kılavuzu (2 Dakika)</span>
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
-            <div class="text-cyber-cyan font-mono text-2xl font-bold mb-2">01</div>
-            <h4 class="font-semibold text-white text-sm mb-1">Uygulamayı İndir</h4>
-            <p class="text-xs text-slate-400">Android telefon veya Android TV için resmi CloudStream 3 APK dosyasını indirip yükleyin.</p>
-          </div>
-          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
-            <div class="text-cyber-cyan font-mono text-2xl font-bold mb-2">02</div>
-            <h4 class="font-semibold text-white text-sm mb-1">Depo Bağlantısını Ekle</h4>
-            <p class="text-xs text-slate-400">Ayarlar > Eklentiler > Depo Ekle bölümüne girin. Yukarıdaki butonlardan depoyu tek tıkla ekleyin veya linki yapıştırın.</p>
-          </div>
-          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
-            <div class="text-cyber-cyan font-mono text-2xl font-bold mb-2">03</div>
-            <h4 class="font-semibold text-white text-sm mb-1">Eklentileri İndir ve İzle</h4>
-            <p class="text-xs text-slate-400">Depo içindeki eklentilerden istediklerinizi "Kur" düğmesine basarak etkinleştirin. Tüm içerik anında hazır!</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ============================================== -->
-    <!-- PLATFORM CONTENT 2: NUVIO & STREMIO           -->
-    <!-- ============================================== -->
-    <div id="panel-nuvio" class="transition-all duration-300 hidden">
-
-      <!-- Hero Banner for Nuvio / Stremio -->
-      <div class="glass-card rounded-3xl p-6 sm:p-8 mb-8 border border-cyber-magenta/30 relative overflow-hidden">
-        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-cyber-magenta/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
-          <div>
-            <div class="flex items-center gap-2 text-cyber-magenta text-xs font-mono uppercase tracking-wider mb-2">
-              <i data-lucide="cloud-lightning" class="w-4 h-4"></i>
-              <span>Stremio & Nuvio Addon Protocol</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Nuvio & Stremio Entegrasyonu</h2>
-            <p class="text-sm text-slate-400 max-w-xl">
-              Web, iOS, PC, Mac, Android ve Akıllı TV'lerde çalışan Stremio ve Nuvio için Türkçe dizi, film ve katalog akış çözücüsü.
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-3 w-full md:w-auto">
-            <a href="https://stremio.com" target="_blank" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white font-medium text-sm transition-all">
-              <i data-lucide="download" class="w-4 h-4"></i>
-              <span>Stremio İndir</span>
-            </a>
-            <a href="stremio://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json" class="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-cyber-magenta text-white hover:bg-cyber-magenta/90 font-semibold text-sm transition-all shadow-[0_0_20px_rgba(255,0,127,0.3)]">
-              <i data-lucide="play" class="w-4 h-4"></i>
-              <span>Stremio'ya Otomatik Kur</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Nuvio / Stremio Setup Card & Manifest Link -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
-        <!-- Manifest Card -->
-        <div class="md:col-span-2 glass-card rounded-2xl p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-10 h-10 rounded-xl bg-cyber-magenta/10 border border-cyber-magenta/30 flex items-center justify-center">
-                <i data-lucide="code" class="w-5 h-5 text-cyber-magenta"></i>
-              </div>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-cyber-magenta/10 text-cyber-magenta border border-cyber-magenta/20">30 KATALOG AKTİF</span>
-            </div>
-            <h3 class="text-lg font-bold text-white mb-2">Eklenti Manifest Bağlantısı</h3>
-            <p class="text-xs text-slate-400 mb-4">
-              Nuvio veya Stremio Addon arama kutusuna doğrudan yapıştırabileceğiniz hazır yapılandırılmış manifest linki:
-            </p>
-            <div class="p-3.5 rounded-xl bg-black/60 border border-white/10 font-mono text-xs text-cyber-cyan break-all flex items-center justify-between gap-3 mb-4">
-              <span>https://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json</span>
-              <button onclick="copyToClipboard('https://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json', 'Stremio Manifest URL')" class="shrink-0 p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors">
-                <i data-lucide="copy" class="w-4 h-4"></i>
-              </button>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-3 pt-4 border-t border-white/5">
-            <a href="stremio://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json" class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-cyber-magenta/20 hover:bg-cyber-magenta/30 text-cyber-magenta border border-cyber-magenta/40 text-xs font-semibold transition-all">
-              <i data-lucide="external-link" class="w-4 h-4"></i>
-              <span>Tek Tıkla Stremio Kurulumu</span>
-            </a>
-            <button onclick="copyToClipboard('https://cvnflix.onrcvndev.com.tr/PtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg/manifest.json', 'Manifest Linki')" class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-medium transition-all">
-              <i data-lucide="copy" class="w-4 h-4"></i>
-              <span>Linki Kopyala</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- QR Code TV Pairing Card -->
-        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-          <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-3">
-            <i data-lucide="qr-code" class="w-5 h-5 text-cyber-cyan"></i>
-          </div>
-          <h4 class="font-bold text-white text-sm mb-1">Android TV / Web QR</h4>
-          <p class="text-xs text-slate-400 mb-4">Telefon kameranızla tarayın, linki TV veya cihazınıza anında aktarın.</p>
-          <div class="p-3 bg-white rounded-xl shadow-lg mb-3">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https%3A%2F%2Fcvnflix.onrcvndev.com.tr%2FPtpdVaoRxuSHtPAip8Pl43_n24aT1G6oWE5GVa68cbg%2Fmanifest.json" alt="QR Code" class="w-28 h-28 object-contain">
-          </div>
-          <span class="text-[10px] font-mono text-slate-500">STREMIO COMPATIBLE</span>
-        </div>
-
-      </div>
-
-      <!-- Nuvio / Stremio Setup Guide -->
-      <div class="glass-card rounded-3xl p-6 sm:p-8">
-        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-          <i data-lucide="help-circle" class="w-5 h-5 text-cyber-magenta"></i>
-          <span>Nuvio & Stremio Kurulum Kılavuzu (3 Adım)</span>
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
-            <div class="text-cyber-magenta font-mono text-2xl font-bold mb-2">01</div>
-            <h4 class="font-semibold text-white text-sm mb-1">Stremio / Nuvio Başlatın</h4>
-            <p class="text-xs text-slate-400">Uygulamayı açın ve sol menüden Eklentiler (Addons / Topluluk Eklentileri) bölümüne geçin.</p>
-          </div>
-          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
-            <div class="text-cyber-magenta font-mono text-2xl font-bold mb-2">02</div>
-            <h4 class="font-semibold text-white text-sm mb-1">Manifest URL'sini Yapıştırın</h4>
-            <p class="text-xs text-slate-400">Arama çubuğuna yukarıdaki manifest linkini yapıştırın veya 'Tek Tıkla Kur' butonuna basın.</p>
-          </div>
-          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5">
-            <div class="text-cyber-magenta font-mono text-2xl font-bold mb-2">03</div>
-            <h4 class="font-semibold text-white text-sm mb-1">Türkçe Kaynaklarla İzleyin</h4>
-            <p class="text-xs text-slate-400">Filmlerin ve dizilerin altında HDFilmCehennemi, Dizipal, DDizi ve AsyaWatch akışları otomatik listelenir.</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ============================================== -->
-    <!-- BENTO GRID: CAPABILITIES & ARCHITECTURE        -->
-    <!-- ============================================== -->
-    <section class="mt-16">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">Yeni Nesil Medya Mimarisi</h2>
-        <p class="text-sm text-slate-400 max-w-lg mx-auto">Geleneksel web sitelerindeki reklam ve yönlendirmeleri baypas eden temiz veri akışı.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <!-- Bento 1: Canlı Spor & TV -->
-        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <i data-lucide="radio" class="w-6 h-6 text-emerald-400"></i>
-          </div>
-          <h3 class="text-lg font-bold text-white mb-2">Dinamik Canlı TV & Spor</h3>
-          <p class="text-xs text-slate-400 leading-relaxed mb-4">
-            Stalker Stb ve IPTV portallarında token düşmelerini engelleyen arka plan otomatik el sıkışması (handshake) motoru.
-          </p>
-          <div class="flex items-center gap-2 font-mono text-[11px] text-emerald-400">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>209+ TÜRK KANALI AKTİF</span>
-          </div>
-        </div>
-
-        <!-- Bento 2: 0-Sunucu / P2P Kazıma -->
-        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-          <div class="w-12 h-12 rounded-2xl bg-cyber-cyan/10 border border-cyber-cyan/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <i data-lucide="shield" class="w-6 h-6 text-cyber-cyan"></i>
-          </div>
-          <h3 class="text-lg font-bold text-white mb-2">Sıfır Sunucu Bağımlılığı</h3>
-          <p class="text-xs text-slate-400 leading-relaxed mb-4">
-            CloudStream eklentileri doğrudan kullanıcının cihazında çalışır. Merkezi sunucu çökmesi veya IP engeli riski yoktur.
-          </p>
-          <div class="flex items-center gap-2 font-mono text-[11px] text-cyber-cyan">
-            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-            <span>DECENTRALIZED SCRAPING</span>
-          </div>
-        </div>
-
-        <!-- Bento 3: Otomatik Çözücü & Header Enjeksiyonu -->
-        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-          <div class="w-12 h-12 rounded-2xl bg-cyber-purple/10 border border-cyber-purple/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <i data-lucide="terminal" class="w-6 h-6 text-purple-400"></i>
-          </div>
-          <h3 class="text-lg font-bold text-white mb-2">Otomatik Header Bypass</h3>
-          <p class="text-xs text-slate-400 leading-relaxed mb-4">
-            Rapidrame, Pilavyer ve video CDN'lerinin koyduğu Referer ve User-Agent kısıtlamaları otomatik olarak çözülür.
-          </p>
-          <div class="flex items-center gap-2 font-mono text-[11px] text-purple-400">
-            <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
-            <span>AUTO REFERER / UA INJECT</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="mt-20 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
-      <div class="flex items-center gap-2">
-        <span class="text-slate-300 font-semibold">WioStream</span>
-        <span>·</span>
-        <span>DESIGNED & MAINTAINED BY <a href="https://github.com/Wiojelt" target="_blank" class="text-cyber-cyan hover:underline">WIOJELT</a></span>
-      </div>
-      <div class="flex items-center gap-4">
-        <a href="https://github.com/Wiojelt/test" target="_blank" class="hover:text-slate-300 transition-colors">Test Repo</a>
-        <a href="https://github.com/Wiojelt/TurkSinema" target="_blank" class="hover:text-slate-300 transition-colors">TurkSinema</a>
-        <a href="https://github.com/Wiojelt/TurkSpor" target="_blank" class="hover:text-slate-300 transition-colors">TurkSpor</a>
-      </div>
-    </footer>
-
-  </div>
-
-  <!-- Toast Notification Modal -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="glass-card border border-cyber-cyan/50 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
-      <div class="w-6 h-6 rounded-lg bg-cyber-cyan/20 flex items-center justify-center text-cyber-cyan">
-        <i data-lucide="check" class="w-4 h-4"></i>
-      </div>
-      <div>
-        <p id="toast-title" class="font-bold text-xs text-white">Başarılı</p>
-        <p id="toast-msg" class="text-[11px] text-slate-300">Bağlantı panoya kopyalandı!</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Logic & Canvas Animation -->
+    <section class="wrap community reveal" id="topluluk"><div><div class="eyebrow">03 / Topluluk & destek</div><h2>Duyuru ve yardım.</h2><p>Güncel duyurular ve kurulum desteği için WioLand Telegram kanalına katıl. Geliştirici: Wiojelt.</p></div><a class="button" href="https://t.me/wiolandcs3" target="_blank" rel="noopener">Telegram’a katıl <span class="arrow">↗</span></a></section>
+  </main>
+  <footer class="wrap"><span>© <span id="year">2026</span> WioStream · Wiojelt</span><div class="footer-links"><a href="https://github.com/Wiojelt/WioLand" target="_blank" rel="noopener">WioLand ↗</a><a href="https://github.com/Wiojelt" target="_blank" rel="noopener">GitHub ↗</a><a href="#top">Yukarı dön ↑</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite">Bağlantı panoya kopyalandı</div>
   <script>
-    // Lucide Icons Init
-    lucide.createIcons();
-
-    // Platform Switcher Function
-    function switchPlatform(platform) {
-      const panelCS = document.getElementById('panel-cloudstream');
-      const panelNuvio = document.getElementById('panel-nuvio');
-      const btnCS = document.getElementById('tab-cloudstream');
-      const btnNuvio = document.getElementById('tab-nuvio');
-
-      if (platform === 'cloudstream') {
-        panelCS.classList.remove('hidden');
-        panelCS.classList.add('block');
-        panelNuvio.classList.add('hidden');
-        panelNuvio.classList.remove('block');
-
-        // Style buttons
-        btnCS.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-white bg-gradient-to-r from-cyber-cyan/20 to-cyber-purple/30 border border-cyber-cyan/50 shadow-[0_0_20px_rgba(0,240,255,0.25)]";
-        btnNuvio.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-slate-400 hover:text-white border border-transparent";
-      } else {
-        panelNuvio.classList.remove('hidden');
-        panelNuvio.classList.add('block');
-        panelCS.classList.add('hidden');
-        panelCS.classList.remove('block');
-
-        // Style buttons
-        btnNuvio.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-white bg-gradient-to-r from-cyber-magenta/20 to-cyber-purple/30 border border-cyber-magenta/50 shadow-[0_0_20px_rgba(255,0,127,0.25)]";
-        btnCS.className = "flex-1 py-3.5 px-4 rounded-xl flex items-center justify-center gap-2.5 font-semibold text-sm transition-all duration-300 relative z-10 text-slate-400 hover:text-white border border-transparent";
-      }
-      lucide.createIcons();
-    }
-
-    // Toast Notification & Clipboard Copy
-    function copyToClipboard(text, label) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(label || 'Bağlantı', 'Panoya başarıyla kopyalandı!');
-      }).catch(() => {
-        const input = document.createElement('input');
-        input.value = text;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        showToast(label || 'Bağlantı', 'Panoya kopyalandı!');
-      });
-    }
-
-    function showToast(title, msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-title').innerText = title;
-      document.getElementById('toast-msg').innerText = msg;
-
-      toast.classList.remove('translate-y-24', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-
-      setTimeout(() => {
-        toast.classList.add('translate-y-24', 'opacity-0');
-        toast.classList.remove('translate-y-0', 'opacity-100');
-      }, 2500);
-    }
-
-    // Subtle Canvas Star/Grid Animation
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height, stars = [];
-
-    function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      stars = [];
-      const count = Math.floor((width * height) / 14000);
-      for (let i = 0; i < count; i++) {
-        stars.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.5,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2,
-          alpha: Math.random() * 0.7 + 0.2
-        });
-      }
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-      for (let s of stars) {
-        s.x += s.vx;
-        s.y += s.vy;
-        if (s.x < 0) s.x = width;
-        if (s.x > width) s.x = 0;
-        if (s.y < 0) s.y = height;
-        if (s.y > height) s.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 240, 255, ${s.alpha})`;
-        ctx.fill();
-      }
-      requestAnimationFrame(animate);
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-    animate();
+    const tabs=[...document.querySelectorAll('[role="tab"]')];
+    function selectTab(id){tabs.forEach(tab=>{const active=tab.id===`tab-${id}`;tab.setAttribute('aria-selected',String(active));document.getElementById(tab.getAttribute('aria-controls')).hidden=!active;});}
+    tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>selectTab(tab.id.replace('tab-','')));tab.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const next=(index+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length;tabs[next].focus();tabs[next].click();}})});
+    let toastTimer;const toast=document.getElementById('toast');
+    async function copyValue(value){try{await navigator.clipboard.writeText(value)}catch{const input=document.createElement('textarea');input.value=value;input.style.position='fixed';input.style.opacity='0';document.body.append(input);input.select();document.execCommand('copy');input.remove()}toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2200)}
+    document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',()=>copyValue(button.dataset.copy)));
+    const search=document.getElementById('plugin-search'),searchCount=document.getElementById('search-count'),pluginCards=[...document.querySelectorAll('#resource-grid [data-search]')];
+    function filterPlugins(){if(!search)return;const query=search.value.trim().toLocaleLowerCase('tr');let shown=0;pluginCards.forEach(card=>{const match=!query||card.dataset.search.toLocaleLowerCase('tr').includes(query);card.hidden=!match;if(match)shown++});searchCount.textContent=query?`${shown} sonuç`:''}
+    search?.addEventListener('input',filterPlugins);
+    const menuButton=document.getElementById('menu-button'),nav=document.getElementById('nav-links');menuButton.addEventListener('click',()=>{const open=nav.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(open));menuButton.setAttribute('aria-label',open?'Menüyü kapat':'Menüyü aç')});nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{nav.classList.remove('open');menuButton.setAttribute('aria-expanded','false')}));
+    const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if('IntersectionObserver'in window&&!reduceMotion){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el))}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
+    document.getElementById('year').textContent=new Date().getFullYear();
   </script>
 </body>
 </html>
