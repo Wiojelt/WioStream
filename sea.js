@@ -20,7 +20,7 @@
     closeTimer = setTimeout(() => {
       dialog.close();
       lastTrigger?.focus();
-    }, prefersReducedMotion ? 0 : 240);
+    }, prefersReducedMotion ? 0 : 360);
   }
   dialog?.querySelector('.dialog-close')?.addEventListener('click', closeDialog);
   dialog?.querySelector('.dialog-done')?.addEventListener('click', closeDialog);
@@ -39,6 +39,7 @@
     const fallbackCode = '!megawio';
     const copyButton = dialog.querySelector('.dialog-copy');
     const manifest = dialog.querySelector('.dialog-manifest');
+    dialog.style.setProperty('--logo-accent', getComputedStyle(card).getPropertyValue('--logo-accent'));
     dialog.querySelector('.dialog-logo').src = logo?.src || '';
     dialog.querySelector('.dialog-logo').alt = logo?.alt || '';
     dialog.querySelector('.dialog-kicker').textContent = card.closest('#panel-nuvio') ? 'Nuvio / Stremio' : 'CloudStream 3';
