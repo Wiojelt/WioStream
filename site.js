@@ -42,18 +42,48 @@
   if (panels[location.hash.slice(1)]) showTab(location.hash.slice(1));
 
   async function copyValue(value) {
-    try { await navigator.clipboard.writeText(value); }
+    let copied = false;
+    try { await navigator.clipboard.writeText(value); copied = true; }
     catch (_) {
       const field = document.createElement('textarea');
-      field.value = value; field.style.cssText = 'position:fixed;opacity:0;left:-9999px';
-      document.body.append(field); field.select(); document.execCommand('copy'); field.remove();
+      field.value = value; field.style.cssText = 'position:fixed;opacity:0;left:0;top:0';
+      (dialog.open ? dialog : document.body).append(field);
+      field.focus(); field.select(); copied = document.execCommand('copy'); field.remove();
     }
-    toast.textContent = 'Kopyalandı'; toast.classList.add('show');
+    toast.textContent = copied ? 'Kopyalandı' : 'Kopyalanamadı — bağlantıyı seçip kopyala';
+    toast.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2100);
   }
   document.querySelectorAll('[data-copy]').forEach(button => button.addEventListener('click', () => copyValue(button.dataset.copy)));
 
   let lastCardButton;
+  function addLinkRow(container, label, value, isUrl) {
+    const row = document.createElement('div');
+    row.className = 'dialog-link-row';
+    const caption = document.createElement('span');
+    caption.className = 'dialog-link-label';
+    caption.textContent = label;
+    const line = document.createElement('div');
+    line.className = 'dialog-link-line';
+    const content = document.createElement(isUrl ? 'a' : 'code');
+    content.className = 'dialog-link-value';
+    content.textContent = value;
+    if (isUrl) {
+      content.href = value;
+      content.target = '_blank';
+      content.rel = 'noopener';
+    }
+    const copy = document.createElement('button');
+    copy.className = 'dialog-link-copy';
+    copy.type = 'button';
+    copy.dataset.copy = value;
+    copy.setAttribute('aria-label', isUrl ? `${label} kopyala` : 'Kısa kodu kopyala');
+    copy.title = 'Kopyala';
+    copy.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>';
+    line.append(content, copy);
+    row.append(caption, line);
+    container.append(row);
+  }
   function openCard(card) {
     lastCardButton = card.querySelector('.card-open');
     const accent = card.style.getPropertyValue('--accent').trim() || '255 255 255';
@@ -66,13 +96,14 @@
     document.querySelector('#dialog-title').textContent = card.dataset.name || '';
     document.querySelector('#dialog-description').textContent = card.dataset.description || '';
     document.querySelector('#dialog-detail').replaceChildren(card.querySelector('template').content.cloneNode(true));
-    const code = card.dataset.code;
-    const codeBox = document.querySelector('#dialog-code');
-    const copyButton = document.querySelector('#dialog-copy');
-    codeBox.hidden = !code;
-    codeBox.textContent = code || '';
-    copyButton.dataset.value = code || '!megawio';
-    copyButton.textContent = code ? (code.startsWith('http') ? 'Manifesti kopyala' : `${code} kopyala`) : '!megawio kopyala';
+    const links = document.querySelector('#dialog-links');
+    links.replaceChildren();
+    if (card.dataset.repo) {
+      if (card.dataset.code) addLinkRow(links, 'Kısa kod', card.dataset.code, false);
+      addLinkRow(links, 'GitHub depo bağlantısı', card.dataset.repo, true);
+    } else if (card.dataset.code) {
+      addLinkRow(links, 'Manifest bağlantısı', card.dataset.code, true);
+    }
     dialog.showModal();
     document.body.style.overflow = 'hidden';
   }
@@ -82,7 +113,10 @@
   });
   document.querySelector('#dialog-close').addEventListener('click', () => dialog.close());
   document.querySelector('#dialog-done').addEventListener('click', () => dialog.close());
-  document.querySelector('#dialog-copy').addEventListener('click', event => copyValue(event.currentTarget.dataset.value));
+  document.querySelector('#dialog-links').addEventListener('click', event => {
+    const button = event.target.closest('[data-copy]');
+    if (button) copyValue(button.dataset.copy);
+  });
   dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
   dialog.addEventListener('close', () => { document.body.style.overflow = ''; lastCardButton?.focus({preventScroll:true}); });
   document.querySelector('#year').textContent = new Date().getFullYear();
