@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="none">
+  <g fill="none" stroke="#e8fff9" stroke-linecap="round">
+    <path opacity=".43" stroke-width="1.7" d="M-60 86 Q96 59 238 84 T537 80 T849 91 T1174 73 T1500 81"/>
+    <path opacity=".18" stroke-width="1" d="M-70 100 Q114 78 248 102 T538 100 T851 108 T1170 91 T1490 100"/>
+    <path opacity=".36" stroke-width="1.4" d="M-60 222 Q114 243 277 209 T592 225 T902 218 T1206 232 T1500 216"/>
+    <path opacity=".17" stroke-width="1" d="M-60 236 Q119 254 286 226 T592 241 T910 231 T1211 248 T1500 230"/>
+    <path opacity=".49" stroke-width="1.8" d="M-60 354 Q94 320 241 346 T533 337 T849 355 T1177 335 T1500 348"/>
+    <path opacity=".16" stroke-width="1" d="M-60 370 Q100 336 248 362 T538 350 T855 371 T1180 350 T1500 362"/>
+    <path opacity=".35" stroke-width="1.4" d="M-60 481 Q97 504 272 474 T584 487 T887 471 T1191 500 T1500 478"/>
+    <path opacity=".16" stroke-width="1" d="M-60 494 Q106 519 274 490 T586 500 T890 487 T1198 513 T1500 490"/>
+    <path opacity=".48" stroke-width="1.7" d="M-60 618 Q106 582 269 615 T578 609 T887 621 T1195 598 T1500 617"/>
+    <path opacity=".16" stroke-width="1" d="M-60 635 Q105 600 277 633 T580 622 T895 637 T1200 614 T1500 631"/>
+    <path opacity=".35" stroke-width="1.5" d="M-60 758 Q100 779 260 751 T559 768 T866 749 T1182 771 T1500 753"/>
+    <path opacity=".15" stroke-width="1" d="M-60 774 Q107 793 264 768 T565 783 T870 765 T1189 787 T1500 767"/>
+  </g>
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" opacity=".22" stroke-width="1.2">
+    <path d="M86 149q48-6 91 0M368 274q30-4 71 0M1047 181q56-6 93 0M795 429q65-4 107 0M112 558q42-5 82 0M1154 664q57-6 95 0M536 848q43-5 98 0"/>
+  </g>
+</svg>
