@@ -44,14 +44,7 @@
   let fieldRgb = '225,231,243';
   let activeCard = null;
   const layoutAnimations = new WeakMap();
-  let cardScrollFrame = 0;
   let toastTimer;
-  const stopCardScroll = () => {
-    if (cardScrollFrame) cancelAnimationFrame(cardScrollFrame);
-    cardScrollFrame = 0;
-  };
-  addEventListener('wheel', stopCardScroll, {passive:true});
-  addEventListener('touchstart', stopCardScroll, {passive:true});
 
   const appearance = editable.appearance || {};
   let preferredTheme = appearance.defaultTheme || 'dark';
@@ -194,7 +187,6 @@
     if (!expanded && activeCard === card) activeCard = null;
   }
   function toggleCard(card) {
-    stopCardScroll();
     const grid = card.parentElement;
     const cards = [...grid.querySelectorAll(':scope > .plugin-card')];
     cards.forEach(item => layoutAnimations.get(item)?.cancel());
@@ -203,7 +195,6 @@
     if (activeCard && activeCard !== card) setExpanded(activeCard, false);
     setExpanded(card, expanding);
     activeCard = expanding ? card : null;
-    const expandedTop = expanding ? Math.max(0, card.getBoundingClientRect().top + scrollY - 84) : 0;
     if (!reduced) {
       cards.forEach(item => {
         const oldRect = before.get(item);
@@ -228,23 +219,6 @@
           }
         };
       });
-    }
-    if (expanding && !document.hidden && Math.abs(scrollY - expandedTop) > 8) {
-      if (reduced) scrollTo(0, expandedTop);
-      else {
-        const from = scrollY;
-        const distance = expandedTop - from;
-        let startTime = 0;
-        const step = time => {
-          if (activeCard !== card) return;
-          if (!startTime) startTime = time;
-          const progress = Math.min(1, (time - startTime) / 1080);
-          const eased = progress * progress * (3 - 2 * progress);
-          scrollTo(0, from + distance * eased);
-          cardScrollFrame = progress < 1 ? requestAnimationFrame(step) : 0;
-        };
-        cardScrollFrame = requestAnimationFrame(step);
-      }
     }
   }
   document.querySelectorAll('.plugin-card').forEach((card, index) => {
