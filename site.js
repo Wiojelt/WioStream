@@ -146,6 +146,7 @@
     if (activeCard && activeCard !== card) setExpanded(activeCard, false);
     setExpanded(card, expanding);
     activeCard = expanding ? card : null;
+    const expandedTop = expanding ? Math.max(0, card.getBoundingClientRect().top + scrollY - 84) : 0;
     if (!reduced) {
       cards.forEach(item => {
         const oldRect = before.get(item);
@@ -172,13 +173,9 @@
       });
     }
     if (expanding) {
-      const alignGrid = () => {
-        if (activeCard !== card || document.hidden) return;
-        const target = Math.max(0, grid.getBoundingClientRect().top + scrollY - 84);
-        if (Math.abs(scrollY - target) > 8) scrollTo({top:target, behavior:reduced ? 'auto' : 'smooth'});
-      };
-      requestAnimationFrame(alignGrid);
-      setTimeout(alignGrid, 680);
+      if (!document.hidden && Math.abs(scrollY - expandedTop) > 8) {
+        scrollTo({top:expandedTop, behavior:reduced ? 'auto' : 'smooth'});
+      }
     }
   }
   document.querySelectorAll('.plugin-card').forEach((card, index) => {
