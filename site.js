@@ -183,6 +183,33 @@
     row.append(caption, line);
     container.append(row);
   }
+  function cloudstreamInstallLink(repo, name, featured = false) {
+    let url;
+    try { url = new URL(repo); } catch (_) { return null; }
+    if (url.protocol !== 'https:' || url.username || url.password) return null;
+    const link = document.createElement('a');
+    link.className = featured ? 'button primary cloudstream-install' : 'card-install';
+    link.href = `cloudstreamrepo://${url.host}${url.pathname}${url.search}`;
+    link.setAttribute('aria-label', `${name} deposunu CloudStream'de aç`);
+    link.title = 'Depoyu CloudStream’de aç; eklentiyi uygulamada seç';
+    const icon = document.createElement('img');
+    icon.src = 'https://raw.githubusercontent.com/recloudstream/cloudstream/master/app/src/prerelease/res/mipmap-xxxhdpi/ic_launcher.png';
+    icon.alt = '';
+    const label = document.createElement('span');
+    label.className = 'install-label';
+    label.textContent = 'CloudStream’e ekle';
+    link.append(icon, label);
+    if (!featured) {
+      const shortLabel = document.createElement('span');
+      shortLabel.className = 'install-short';
+      shortLabel.textContent = 'Ekle';
+      link.append(shortLabel);
+    }
+    return link;
+  }
+  const landRepo = document.querySelector('[data-edit-href="wioLandRepo"]')?.href;
+  const landInstall = landRepo && cloudstreamInstallLink(landRepo, 'WioLand', true);
+  if (landInstall) document.querySelector('.land-content .actions')?.prepend(landInstall);
   function setExpanded(card, expanded) {
     card.classList.toggle('is-expanded', expanded);
     const button = card.querySelector('.card-open');
@@ -260,6 +287,15 @@
     button.dataset.closedLabel = button.childNodes[0].nodeValue.trim();
     button.setAttribute('aria-expanded', 'false');
     button.setAttribute('aria-label', `${card.dataset.name} içeriğini gör`);
+    if (card.dataset.repo) {
+      const install = cloudstreamInstallLink(card.dataset.repo, card.dataset.name);
+      if (install) {
+        const actions = document.createElement('div');
+        actions.className = 'card-actions';
+        button.replaceWith(actions);
+        actions.append(button, install);
+      }
+    }
     const detail = document.createElement('div');
     detail.className = 'card-detail';
     detail.id = `card-detail-${index}`;
