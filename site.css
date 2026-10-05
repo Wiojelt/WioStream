@@ -237,9 +237,10 @@ main#top{padding-top:34px}.tab-bar{margin:0 auto 24px;scroll-margin-top:100px}.t
   #panel-nuvio .nuvio-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
-/* Cursor light sits above the glass; each card adds its own accent under it. */
-.pointer-light{z-index:8;background:radial-gradient(310px circle at var(--pointer-x,50%) var(--pointer-y,15%),rgba(255,255,255,.115),transparent 72%);mix-blend-mode:screen}
-:root[data-theme="light"] .pointer-light{background:radial-gradient(310px circle at var(--pointer-x,50%) var(--pointer-y,15%),rgb(var(--ambient-rgb)/.14),transparent 72%);mix-blend-mode:multiply}
+/* Keep the pointer glow close to the cursor and faint over the glass. */
+.pointer-light{z-index:8;background:radial-gradient(165px circle at var(--pointer-x,50%) var(--pointer-y,15%),rgb(var(--ambient-rgb)/.045),transparent 72%);mix-blend-mode:screen}
+body.has-pointer .pointer-light{opacity:.55}
+:root[data-theme="light"] .pointer-light{background:radial-gradient(165px circle at var(--pointer-x,50%) var(--pointer-y,15%),rgb(var(--ambient-rgb)/.06),transparent 72%);mix-blend-mode:multiply}
 .glow-card::after{background:radial-gradient(230px circle at var(--cx) var(--cy),rgb(var(--accent)/.18),transparent 72%);opacity:0;transition:opacity .32s ease}
 @media(hover:hover){.glow-card:hover::after{opacity:1}}
 :root[data-theme="light"] .glow-card::after{background:radial-gradient(230px circle at var(--cx) var(--cy),rgb(var(--accent)/.11),transparent 72%)}
