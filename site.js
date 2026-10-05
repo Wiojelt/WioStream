@@ -4,22 +4,60 @@
   const tabs = [...document.querySelectorAll('[role="tab"]')];
   const panels = {cloudstream: document.querySelector('#panel-cloudstream'), nuvio: document.querySelector('#panel-nuvio')};
   const themeButton = document.querySelector('#theme-toggle');
-  const dialog = document.querySelector('#plugin-dialog');
+  const paletteButton = document.querySelector('#palette-toggle');
+  const paletteMenu = document.querySelector('#palette-menu');
+  const paletteChoices = [...document.querySelectorAll('[data-palette-choice]')];
+  const header = document.querySelector('.site-header');
   const toast = document.querySelector('#toast');
+  let fieldRgb = '225,231,243';
+  let activeCard = null;
   let toastTimer;
 
-  try { if (localStorage.getItem('wiostream-theme') === 'light') root.dataset.theme = 'light'; } catch (_) {}
+  try { if (localStorage.getItem('wiostream-theme-v2') === 'light') root.dataset.theme = 'light'; } catch (_) {}
+  try {
+    const savedPalette = localStorage.getItem('wiostream-palette');
+    if (paletteChoices.some(choice => choice.dataset.paletteChoice === savedPalette)) root.dataset.palette = savedPalette;
+  } catch (_) {}
   function updateThemeLabel() { themeButton.setAttribute('aria-label', root.dataset.theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'); }
+  function updatePalette() {
+    paletteChoices.forEach(choice => choice.setAttribute('aria-pressed', String(choice.dataset.paletteChoice === root.dataset.palette)));
+    document.querySelector('meta[name="theme-color"]').content = getComputedStyle(root).getPropertyValue('--bg').trim();
+    fieldRgb = getComputedStyle(root).getPropertyValue('--field-rgb').trim();
+  }
+  function closePalette() { paletteMenu.hidden = true; paletteButton.setAttribute('aria-expanded', 'false'); }
+  paletteButton.addEventListener('click', () => {
+    paletteMenu.hidden = !paletteMenu.hidden;
+    paletteButton.setAttribute('aria-expanded', String(!paletteMenu.hidden));
+  });
+  paletteChoices.forEach(choice => choice.addEventListener('click', () => {
+    root.dataset.palette = choice.dataset.paletteChoice;
+    updatePalette();
+    closePalette();
+    try { localStorage.setItem('wiostream-palette', root.dataset.palette); } catch (_) {}
+  }));
+  document.addEventListener('click', event => { if (!event.target.closest('.theme-controls')) closePalette(); });
   updateThemeLabel();
+  updatePalette();
   themeButton.addEventListener('click', () => {
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
     updateThemeLabel();
-    try { localStorage.setItem('wiostream-theme', root.dataset.theme); } catch (_) {}
+    updatePalette();
+    try { localStorage.setItem('wiostream-theme-v2', root.dataset.theme); } catch (_) {}
   });
+
+  let scrollFrame = 0;
+  function updateHeader() {
+    header.classList.toggle('is-scrolled', scrollY > 28);
+    scrollFrame = 0;
+  }
+  addEventListener('scroll', () => { if (!scrollFrame) scrollFrame = requestAnimationFrame(updateHeader); }, {passive:true});
+  updateHeader();
 
   function showTab(id, scroll = false) {
     if (!panels[id]) return;
+    if (activeCard && !panels[id].contains(activeCard)) setExpanded(activeCard, false);
     tabs.forEach(tab => { tab.setAttribute('aria-selected', String(tab.id === `tab-${id}`)); tab.tabIndex = tab.id === `tab-${id}` ? 0 : -1; });
+    document.querySelectorAll('[data-tab-link]').forEach(link => link.classList.toggle('is-active', link.dataset.tabLink === id));
     Object.entries(panels).forEach(([key, panel]) => { panel.hidden = key !== id; });
     if (scroll) document.querySelector('#platforms').scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block: 'start'});
   }
@@ -39,7 +77,7 @@
     history.replaceState(null, '', `#${id}`);
   }));
   window.addEventListener('hashchange', () => { if (panels[location.hash.slice(1)]) showTab(location.hash.slice(1)); });
-  if (panels[location.hash.slice(1)]) showTab(location.hash.slice(1));
+  showTab(panels[location.hash.slice(1)] ? location.hash.slice(1) : 'cloudstream');
 
   async function copyValue(value) {
     let copied = false;
@@ -47,26 +85,28 @@
     catch (_) {
       const field = document.createElement('textarea');
       field.value = value; field.style.cssText = 'position:fixed;opacity:0;left:0;top:0';
-      (dialog.open ? dialog : document.body).append(field);
+      document.body.append(field);
       field.focus(); field.select(); copied = document.execCommand('copy'); field.remove();
     }
     toast.textContent = copied ? 'Kopyalandı' : 'Kopyalanamadı — bağlantıyı seçip kopyala';
     toast.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2100);
   }
-  document.querySelectorAll('[data-copy]').forEach(button => button.addEventListener('click', () => copyValue(button.dataset.copy)));
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-copy]');
+    if (button) copyValue(button.dataset.copy);
+  });
 
-  let lastCardButton;
   function addLinkRow(container, label, value, isUrl) {
     const row = document.createElement('div');
-    row.className = 'dialog-link-row';
+    row.className = 'detail-link-row';
     const caption = document.createElement('span');
-    caption.className = 'dialog-link-label';
+    caption.className = 'detail-link-label';
     caption.textContent = label;
     const line = document.createElement('div');
-    line.className = 'dialog-link-line';
+    line.className = 'detail-link-line';
     const content = document.createElement(isUrl ? 'a' : 'code');
-    content.className = 'dialog-link-value';
+    content.className = 'detail-link-value';
     content.textContent = value;
     if (isUrl) {
       content.href = value;
@@ -74,7 +114,7 @@
       content.rel = 'noopener';
     }
     const copy = document.createElement('button');
-    copy.className = 'dialog-link-copy';
+    copy.className = 'detail-link-copy';
     copy.type = 'button';
     copy.dataset.copy = value;
     copy.setAttribute('aria-label', isUrl ? `${label} kopyala` : 'Kısa kodu kopyala');
@@ -84,41 +124,70 @@
     row.append(caption, line);
     container.append(row);
   }
-  function openCard(card) {
-    lastCardButton = card.querySelector('.card-open');
-    const accent = card.style.getPropertyValue('--accent').trim() || '255 255 255';
-    dialog.style.setProperty('--dialog-accent', accent);
-    const img = card.querySelector('.card-art img');
-    const dialogLogo = document.querySelector('#dialog-logo');
-    dialogLogo.src = img?.getAttribute('src') || 'assets/logos/LiveHub.svg';
-    dialogLogo.alt = img?.alt || `${card.dataset.name} logosu`;
-    document.querySelector('#dialog-category').textContent = card.dataset.category || '';
-    document.querySelector('#dialog-title').textContent = card.dataset.name || '';
-    document.querySelector('#dialog-description').textContent = card.dataset.description || '';
-    document.querySelector('#dialog-detail').replaceChildren(card.querySelector('template').content.cloneNode(true));
-    const links = document.querySelector('#dialog-links');
-    links.replaceChildren();
+  function setExpanded(card, expanded) {
+    card.classList.toggle('is-expanded', expanded);
+    const button = card.querySelector('.card-open');
+    button.setAttribute('aria-expanded', String(expanded));
+    button.setAttribute('aria-label', `${card.dataset.name} içeriğini ${expanded ? 'kapat' : 'gör'}`);
+    button.childNodes[0].nodeValue = expanded ? 'İçeriği kapat ' : `${button.dataset.closedLabel} `;
+    button.querySelector('span').textContent = expanded ? '−' : '↗';
+    const detail = card.querySelector('.card-detail');
+    detail.inert = !expanded;
+    detail.setAttribute('aria-hidden', String(!expanded));
+    if (!expanded && activeCard === card) activeCard = null;
+  }
+  function toggleCard(card) {
+    const expanding = !card.classList.contains('is-expanded');
+    if (activeCard && activeCard !== card) setExpanded(activeCard, false);
+    setExpanded(card, expanding);
+    activeCard = expanding ? card : null;
+  }
+  document.querySelectorAll('.plugin-card').forEach((card, index) => {
+    const button = card.querySelector('.card-open');
+    button.dataset.closedLabel = button.childNodes[0].nodeValue.trim();
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-label', `${card.dataset.name} içeriğini gör`);
+    const detail = document.createElement('div');
+    detail.className = 'card-detail';
+    detail.id = `card-detail-${index}`;
+    detail.inert = true;
+    detail.setAttribute('aria-hidden', 'true');
+    button.setAttribute('aria-controls', detail.id);
+    const inner = document.createElement('div');
+    inner.className = 'card-detail-inner';
+    const content = document.createElement('div');
+    content.className = 'card-detail-content';
+    content.append(card.querySelector('template').content.cloneNode(true));
+    const links = document.createElement('div');
+    links.className = 'detail-links';
     if (card.dataset.repo) {
       if (card.dataset.code) addLinkRow(links, 'Kısa kod', card.dataset.code, false);
       addLinkRow(links, 'GitHub depo bağlantısı', card.dataset.repo, true);
     } else if (card.dataset.code) {
       addLinkRow(links, 'Manifest bağlantısı', card.dataset.code, true);
     }
-    dialog.showModal();
-    document.body.style.overflow = 'hidden';
-  }
-  document.querySelectorAll('.plugin-card').forEach(card => {
-    card.addEventListener('click', () => openCard(card));
-    card.querySelector('.card-open').setAttribute('aria-label', `${card.dataset.name} içeriğini gör`);
+    if (links.childElementCount) content.append(links);
+    inner.append(content);
+    detail.append(inner);
+    card.append(detail);
+    button.addEventListener('click', event => { event.stopPropagation(); toggleCard(card); });
+    card.addEventListener('click', event => {
+      if (event.target.closest('.card-detail, button, a')) return;
+      toggleCard(card);
+    });
   });
-  document.querySelector('#dialog-close').addEventListener('click', () => dialog.close());
-  document.querySelector('#dialog-done').addEventListener('click', () => dialog.close());
-  document.querySelector('#dialog-links').addEventListener('click', event => {
-    const button = event.target.closest('[data-copy]');
-    if (button) copyValue(button.dataset.copy);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !paletteMenu.hidden) {
+      closePalette();
+      paletteButton.focus({preventScroll:true});
+      return;
+    }
+    if (event.key === 'Escape' && activeCard) {
+      const button = activeCard.querySelector('.card-open');
+      setExpanded(activeCard, false);
+      button.focus({preventScroll:true});
+    }
   });
-  dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
-  dialog.addEventListener('close', () => { document.body.style.overflow = ''; lastCardButton?.focus({preventScroll:true}); });
   document.querySelector('#year').textContent = new Date().getFullYear();
 
   let pointerFrame = 0;
@@ -129,6 +198,12 @@
     if (!pointerFrame) pointerFrame = requestAnimationFrame(() => {
       root.style.setProperty('--pointer-x', `${x}px`);
       root.style.setProperty('--pointer-y', `${y}px`);
+      const sceneX = Math.round((x / innerWidth - .5) * 30);
+      const sceneY = Math.round((y / innerHeight - .5) * 24);
+      root.style.setProperty('--scene-x', `${sceneX}px`);
+      root.style.setProperty('--scene-y', `${sceneY}px`);
+      root.style.setProperty('--scene-x-opposite', `${Math.round(sceneX * -.6)}px`);
+      root.style.setProperty('--scene-y-opposite', `${Math.round(sceneY * -.6)}px`);
       pointerFrame = 0;
     });
   }, {passive:true});
@@ -162,8 +237,7 @@
   }
   function draw(delta) {
     ctx.clearRect(0,0,width,height);
-    const light = root.dataset.theme === 'light';
-    const rgb = light ? '49,58,82' : '225,231,243';
+    const rgb = fieldRgb;
     for (let i=0;i<points.length;i++) {
       const p=points[i];
       if (delta && !reduced) {p.x+=p.vx*delta;p.y+=p.vy*delta;if(p.x<0||p.x>width)p.vx*=-1;if(p.y<0||p.y>height)p.vy*=-1;}
