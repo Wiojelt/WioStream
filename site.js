@@ -9,6 +9,38 @@
   const paletteChoices = [...document.querySelectorAll('[data-palette-choice]')];
   const header = document.querySelector('.site-header');
   const toast = document.querySelector('#toast');
+  const editable = window.WIOSTREAM_EDIT || {};
+  const editValue = key => editable.text?.[key] ?? editable.links?.[key];
+  document.querySelectorAll('[data-edit-text]').forEach(element => {
+    const value = editValue(element.dataset.editText);
+    if (typeof value === 'string') element.textContent = value;
+  });
+  document.querySelectorAll('[data-edit-href]').forEach(element => {
+    const value = editable.links?.[element.dataset.editHref];
+    if (typeof value === 'string' && /^(https?:\/\/|mailto:)/i.test(value)) element.href = value;
+  });
+  document.querySelectorAll('[data-edit-copy]').forEach(element => {
+    const value = editValue(element.dataset.editCopy);
+    if (typeof value === 'string') element.dataset.copy = value;
+  });
+  document.querySelectorAll('.plugin-card').forEach(card => {
+    const data = editable.cards?.[card.dataset.name];
+    if (!data) return;
+    if (typeof data.summary === 'string') card.querySelector('.card-info p').textContent = data.summary;
+    if (typeof data.repo === 'string' && /^https?:\/\//i.test(data.repo)) card.dataset.repo = data.repo;
+    if (typeof data.logo === 'string' && /^https?:\/\//i.test(data.logo)) {
+      const logo = card.querySelector('.card-art img');
+      if (logo) logo.src = data.logo;
+    }
+    if (Array.isArray(data.sources)) {
+      const list = card.querySelector('template')?.content.querySelector('.source-list');
+      if (list) list.replaceChildren(...data.sources.filter(source => typeof source === 'string').map(source => {
+        const item = document.createElement('span');
+        item.textContent = source;
+        return item;
+      }));
+    }
+  });
   let fieldRgb = '225,231,243';
   let activeCard = null;
   const layoutAnimations = new WeakMap();
@@ -21,10 +53,15 @@
   addEventListener('wheel', stopCardScroll, {passive:true});
   addEventListener('touchstart', stopCardScroll, {passive:true});
 
-  try { if (localStorage.getItem('wiostream-theme-v2') === 'light') root.dataset.theme = 'light'; } catch (_) {}
+  try {
+    const savedTheme = localStorage.getItem('wiostream-theme-v2');
+    const preferredTheme = savedTheme || editable.appearance?.defaultTheme;
+    if (preferredTheme === 'dark' || preferredTheme === 'light') root.dataset.theme = preferredTheme;
+  } catch (_) {}
   try {
     const savedPalette = localStorage.getItem('wiostream-palette');
-    if (paletteChoices.some(choice => choice.dataset.paletteChoice === savedPalette)) root.dataset.palette = savedPalette;
+    const preferredPalette = savedPalette || editable.appearance?.defaultPalette;
+    if (paletteChoices.some(choice => choice.dataset.paletteChoice === preferredPalette)) root.dataset.palette = preferredPalette;
   } catch (_) {}
   function updateThemeLabel() { themeButton.setAttribute('aria-label', root.dataset.theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'); }
   function updatePalette() {
@@ -56,6 +93,7 @@
   let scrollFrame = 0;
   function updateHeader() {
     header.classList.toggle('is-scrolled', scrollY > 28);
+    document.body.classList.toggle('has-scrolled', scrollY > 28);
     scrollFrame = 0;
   }
   addEventListener('scroll', () => { if (!scrollFrame) scrollFrame = requestAnimationFrame(updateHeader); }, {passive:true});
