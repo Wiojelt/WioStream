@@ -53,16 +53,25 @@
   addEventListener('wheel', stopCardScroll, {passive:true});
   addEventListener('touchstart', stopCardScroll, {passive:true});
 
-  try {
-    const savedTheme = localStorage.getItem('wiostream-theme-v2');
-    const preferredTheme = savedTheme || editable.appearance?.defaultTheme;
-    if (preferredTheme === 'dark' || preferredTheme === 'light') root.dataset.theme = preferredTheme;
-  } catch (_) {}
-  try {
-    const savedPalette = localStorage.getItem('wiostream-palette');
-    const preferredPalette = savedPalette || editable.appearance?.defaultPalette;
-    if (paletteChoices.some(choice => choice.dataset.paletteChoice === preferredPalette)) root.dataset.palette = preferredPalette;
-  } catch (_) {}
+  const appearance = editable.appearance || {};
+  let preferredTheme = appearance.defaultTheme || 'dark';
+  if (appearance.rememberTheme) {
+    try { preferredTheme = localStorage.getItem('wiostream-theme-v2') || preferredTheme; } catch (_) {}
+  }
+  if (preferredTheme === 'dark' || preferredTheme === 'light') root.dataset.theme = preferredTheme;
+  const paletteNames = paletteChoices.map(choice => choice.dataset.paletteChoice);
+  if (appearance.rotatePaletteOnLoad) {
+    let previousPalette = appearance.defaultPalette || root.dataset.palette;
+    try { previousPalette = localStorage.getItem('wiostream-last-palette') || localStorage.getItem('wiostream-palette') || previousPalette; } catch (_) {}
+    const candidates = paletteNames.filter(name => name !== previousPalette);
+    const nextPalette = candidates[Math.floor(Math.random() * candidates.length)] || paletteNames[0];
+    if (nextPalette) root.dataset.palette = nextPalette;
+    try { localStorage.setItem('wiostream-last-palette', root.dataset.palette); } catch (_) {}
+  } else {
+    let preferredPalette = appearance.defaultPalette;
+    try { preferredPalette = localStorage.getItem('wiostream-palette') || preferredPalette; } catch (_) {}
+    if (paletteNames.includes(preferredPalette)) root.dataset.palette = preferredPalette;
+  }
   function updateThemeLabel() { themeButton.setAttribute('aria-label', root.dataset.theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'); }
   function updatePalette() {
     paletteChoices.forEach(choice => choice.setAttribute('aria-pressed', String(choice.dataset.paletteChoice === root.dataset.palette)));
@@ -78,7 +87,7 @@
     root.dataset.palette = choice.dataset.paletteChoice;
     updatePalette();
     closePalette();
-    try { localStorage.setItem('wiostream-palette', root.dataset.palette); } catch (_) {}
+    try { localStorage.setItem(appearance.rotatePaletteOnLoad ? 'wiostream-last-palette' : 'wiostream-palette', root.dataset.palette); } catch (_) {}
   }));
   document.addEventListener('click', event => { if (!event.target.closest('.theme-controls')) closePalette(); });
   updateThemeLabel();
@@ -87,7 +96,9 @@
     root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
     updateThemeLabel();
     updatePalette();
-    try { localStorage.setItem('wiostream-theme-v2', root.dataset.theme); } catch (_) {}
+    if (appearance.rememberTheme) {
+      try { localStorage.setItem('wiostream-theme-v2', root.dataset.theme); } catch (_) {}
+    }
   });
 
   let scrollFrame = 0;
@@ -362,3 +373,4 @@
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
   resize();start();
 })();
+
