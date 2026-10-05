@@ -335,3 +335,17 @@ body.has-pointer .pointer-light{opacity:.55}
 .has-reveal .community .telegram-preview{transition:opacity .85s ease .14s,transform .85s cubic-bezier(.22,.72,.18,1) .14s,border-color .4s,box-shadow .4s}
 @media(prefers-reduced-motion:reduce){.has-reveal .status:not(.is-visible) .status-line article,.has-reveal .community:not(.is-visible) .community-copy,.has-reveal .community:not(.is-visible) .telegram-preview{opacity:1;transform:none}}
 
+/* The repository link is available directly on each CloudStream card. */
+.cloudstream-install img,.card-install img{width:18px;height:18px;flex:none;object-fit:contain}
+.button.primary.cloudstream-install{background:#cf3f47;color:#fff}
+.button.primary.cloudstream-install:hover{background:#b9353d}
+.card-actions{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
+.card-actions .card-open{width:auto;min-width:0;flex:1;margin:0;padding:0;border:0}
+.card-install{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:0 10px;border:1px solid rgb(var(--accent)/.38);border-radius:9px;background:rgb(var(--accent)/.11);font:700 10px 'Space Grotesk',sans-serif;white-space:nowrap;transition:background .3s,border-color .3s,transform .3s}
+.card-install:hover{background:rgb(var(--accent)/.2);border-color:rgb(var(--accent)/.7);transform:translateY(-2px)}
+.card-install:focus-visible,.cloudstream-install:focus-visible{outline:2px solid rgb(var(--accent)/.8);outline-offset:3px}
+.card-install .install-short{display:none}
+.plugin-card.is-expanded .card-actions .card-open{margin:0;padding:0;max-width:none}
+@media(max-width:760px){.card-install .install-label{display:none}.card-install .install-short{display:inline}}
+@media(max-width:560px){.card-actions{gap:5px}.card-actions .card-open{font-size:10px}.card-install{gap:4px;padding:0 7px}.card-install img{width:15px;height:15px}}
+
