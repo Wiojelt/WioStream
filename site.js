@@ -172,8 +172,13 @@
       });
     }
     if (expanding) {
-      const gridTop = grid.getBoundingClientRect().top + scrollY;
-      scrollTo({top:Math.max(0, gridTop - 84), behavior:reduced ? 'auto' : 'smooth'});
+      const alignGrid = () => {
+        if (activeCard !== card || document.hidden) return;
+        const target = Math.max(0, grid.getBoundingClientRect().top + scrollY - 84);
+        if (Math.abs(scrollY - target) > 8) scrollTo({top:target, behavior:reduced ? 'auto' : 'smooth'});
+      };
+      requestAnimationFrame(alignGrid);
+      setTimeout(alignGrid, 680);
     }
   }
   document.querySelectorAll('.plugin-card').forEach((card, index) => {
