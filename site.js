@@ -12,7 +12,14 @@
   let fieldRgb = '225,231,243';
   let activeCard = null;
   const layoutAnimations = new WeakMap();
+  let cardScrollFrame = 0;
   let toastTimer;
+  const stopCardScroll = () => {
+    if (cardScrollFrame) cancelAnimationFrame(cardScrollFrame);
+    cardScrollFrame = 0;
+  };
+  addEventListener('wheel', stopCardScroll, {passive:true});
+  addEventListener('touchstart', stopCardScroll, {passive:true});
 
   try { if (localStorage.getItem('wiostream-theme-v2') === 'light') root.dataset.theme = 'light'; } catch (_) {}
   try {
@@ -138,6 +145,7 @@
     if (!expanded && activeCard === card) activeCard = null;
   }
   function toggleCard(card) {
+    stopCardScroll();
     const grid = card.parentElement;
     const cards = [...grid.querySelectorAll(':scope > .plugin-card')];
     cards.forEach(item => layoutAnimations.get(item)?.cancel());
@@ -162,7 +170,7 @@
           end.clipPath = 'inset(0 0 0 0 round 22px)';
         }
         item.style.willChange = 'translate, clip-path';
-        const animation = item.animate([start, end], {duration:620, easing:'cubic-bezier(.18,.74,.2,1)'});
+        const animation = item.animate([start, end], {duration:1080, easing:'cubic-bezier(.22,.72,.18,1)'});
         layoutAnimations.set(item, animation);
         animation.onfinish = animation.oncancel = () => {
           if (layoutAnimations.get(item) === animation) {
@@ -172,9 +180,21 @@
         };
       });
     }
-    if (expanding) {
-      if (!document.hidden && Math.abs(scrollY - expandedTop) > 8) {
-        scrollTo({top:expandedTop, behavior:reduced ? 'auto' : 'smooth'});
+    if (expanding && !document.hidden && Math.abs(scrollY - expandedTop) > 8) {
+      if (reduced) scrollTo(0, expandedTop);
+      else {
+        const from = scrollY;
+        const distance = expandedTop - from;
+        let startTime = 0;
+        const step = time => {
+          if (activeCard !== card) return;
+          if (!startTime) startTime = time;
+          const progress = Math.min(1, (time - startTime) / 1080);
+          const eased = progress * progress * (3 - 2 * progress);
+          scrollTo(0, from + distance * eased);
+          cardScrollFrame = progress < 1 ? requestAnimationFrame(step) : 0;
+        };
+        cardScrollFrame = requestAnimationFrame(step);
       }
     }
   }
