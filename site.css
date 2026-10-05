@@ -237,3 +237,100 @@ main#top{padding-top:34px}.tab-bar{margin:0 auto 24px;scroll-margin-top:100px}.t
   #panel-nuvio .nuvio-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+/* Cursor light sits above the glass; each card adds its own accent under it. */
+.pointer-light{z-index:8;background:radial-gradient(310px circle at var(--pointer-x,50%) var(--pointer-y,15%),rgba(255,255,255,.115),transparent 72%);mix-blend-mode:screen}
+:root[data-theme="light"] .pointer-light{background:radial-gradient(310px circle at var(--pointer-x,50%) var(--pointer-y,15%),rgb(var(--ambient-rgb)/.14),transparent 72%);mix-blend-mode:multiply}
+.glow-card::after{background:radial-gradient(230px circle at var(--cx) var(--cy),rgb(var(--accent)/.18),transparent 72%);opacity:0;transition:opacity .32s ease}
+@media(hover:hover){.glow-card:hover::after{opacity:1}}
+:root[data-theme="light"] .glow-card::after{background:radial-gradient(230px circle at var(--cx) var(--cy),rgb(var(--accent)/.11),transparent 72%)}
+
+/* Status cards mark the archive, current release, and upcoming work. */
+.status-line{gap:13px;margin-top:22px;border:0}
+.status-line article{
+  --stage-rgb:165 173 188;
+  min-height:174px;padding:25px 20px 21px;overflow:hidden;
+  border:1px solid var(--glass-edge);border-radius:20px;
+  background:linear-gradient(145deg,rgb(var(--stage-rgb)/.105),transparent 62%),var(--glass-fill);
+  box-shadow:inset 0 1px 0 var(--glass-glint),0 14px 34px rgba(0,0,0,.08);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:transform .55s cubic-bezier(.22,.72,.18,1),border-color .4s,box-shadow .4s,opacity .7s ease;
+}
+.status-line .status-active{--stage-rgb:91 219 161}
+.status-line .status-building{--stage-rgb:246 185 104}
+.status-line .status-future{--stage-rgb:132 163 250}
+.status-line article:hover{transform:translateY(-5px);border-color:rgb(var(--stage-rgb)/.48);box-shadow:inset 0 1px 0 var(--glass-glint),0 18px 40px rgba(0,0,0,.1),0 0 30px rgb(var(--stage-rgb)/.12)}
+.status-line article::before{
+  content:"";position:absolute;top:0;left:18px;right:18px;width:auto;height:2px;
+  border:0;border-radius:0;background:linear-gradient(90deg,rgb(var(--stage-rgb)/.85),rgb(var(--stage-rgb)/.1));box-shadow:none;
+}
+.status-line article::after{
+  content:"";position:absolute;top:23px;right:20px;width:8px;height:8px;border-radius:50%;
+  border:0;background:rgb(var(--stage-rgb));box-shadow:0 0 0 5px rgb(var(--stage-rgb)/.1),0 0 17px rgb(var(--stage-rgb)/.33);
+}
+.status-line .status-active::after{animation:status-pulse 3.2s ease-in-out infinite}
+@keyframes status-pulse{50%{box-shadow:0 0 0 9px rgb(var(--stage-rgb)/.045),0 0 23px rgb(var(--stage-rgb)/.48)}}
+.status-line .status-meta{display:flex;align-items:center;gap:9px;margin-bottom:22px}
+.status-line .status-meta b{font:700 11px 'Space Grotesk',sans-serif;letter-spacing:.02em;color:rgb(var(--stage-rgb))}
+.status-line .status-meta span{display:inline-flex;align-items:center;width:max-content;margin:0;padding:5px 8px;border:1px solid rgb(var(--stage-rgb)/.26);border-radius:6px;background:rgb(var(--stage-rgb)/.09);color:rgb(var(--stage-rgb));font:700 9px 'Space Grotesk',sans-serif;letter-spacing:.08em}
+.status-line strong{font-size:15px;line-height:1.33}
+.status-line p{font-size:11px;line-height:1.55}
+:root[data-theme="light"] .status-line article{background:linear-gradient(145deg,rgb(var(--stage-rgb)/.075),transparent 65%),rgba(255,255,255,.52)}
+:root[data-theme="light"] .status-line .status-meta b,:root[data-theme="light"] .status-line .status-meta span{color:color-mix(in srgb,rgb(var(--stage-rgb)) 58%,#12202e)}
+
+/* Telegram preview uses a real channel announcement and adapts to every palette. */
+.community{
+  position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,455px);align-items:stretch;
+  gap:36px;margin:86px 0 34px;padding:33px 38px;overflow:hidden;
+  border:1px solid var(--glass-edge);border-radius:28px;
+  background:radial-gradient(ellipse 56% 90% at 95% 5%,rgb(var(--ambient-rgb)/.13),transparent 80%),var(--glass-fill);
+  box-shadow:inset 0 1px 0 var(--glass-glint),0 22px 50px rgba(0,0,0,.09);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+.community::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(118deg,transparent 35%,rgb(var(--ambient-rgb)/.055) 52%,transparent 70%);transform:translateX(-45%);transition:transform 1.15s cubic-bezier(.22,.72,.18,1)}
+.community:hover::before{transform:translateX(20%)}
+.community-copy{align-self:center;padding:8px 0}
+.community .eyebrow{color:rgb(var(--ambient-rgb));letter-spacing:.14em}
+.community h2{font:700 clamp(34px,4vw,54px)/1.03 'Space Grotesk',sans-serif;letter-spacing:-.065em;margin:17px 0 15px}
+.community p{max-width:380px;color:var(--muted);font-size:13px;line-height:1.65}
+.community-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
+.community-actions .button{height:43px;padding:0 14px;border:1px solid var(--glass-edge);background:rgb(var(--ambient-rgb)/.09);box-shadow:inset 0 1px 0 var(--glass-glint);transition:transform .3s,background .3s,border-color .3s}
+.community-actions .button:hover{background:rgb(var(--ambient-rgb)/.17);border-color:rgb(var(--ambient-rgb)/.4)}
+.community-actions .community-primary{background:rgb(var(--ambient-rgb)/.18);color:var(--text)}
+.community-actions svg{width:17px;height:17px}
+.telegram-preview{
+  position:relative;display:flex;flex-direction:column;align-self:stretch;min-width:0;padding:20px 21px 17px;
+  border:1px solid var(--line-strong);border-radius:20px;
+  background:linear-gradient(145deg,rgba(64,155,210,.105),transparent 56%),var(--surface);
+  box-shadow:inset 0 1px 0 rgb(255 255 255/.17),0 17px 35px rgba(0,0,0,.12);
+  transition:transform .6s cubic-bezier(.22,.72,.18,1),border-color .4s,box-shadow .4s;
+}
+.telegram-preview:hover{transform:translateY(-5px) rotate(-.5deg);border-color:rgba(77,177,231,.5);box-shadow:inset 0 1px 0 rgb(255 255 255/.2),0 22px 46px rgba(0,0,0,.16),0 0 28px rgba(77,177,231,.1)}
+.telegram-preview-head{display:flex;align-items:center;gap:11px}
+.telegram-avatar{width:43px;height:43px;flex:none;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#53b6e6,#2479ba);box-shadow:0 7px 19px rgba(36,121,186,.22);animation:telegram-breath 3.5s ease-in-out infinite}
+.telegram-avatar svg{width:23px;height:23px;fill:#fff!important;stroke:none!important}
+@keyframes telegram-breath{50%{box-shadow:0 7px 19px rgba(36,121,186,.25),0 0 0 7px rgba(55,161,220,.075)}}
+.telegram-identity{min-width:0;display:flex;flex-direction:column;line-height:1.35}
+.telegram-identity strong{font:700 15px 'Space Grotesk',sans-serif}
+.telegram-identity small{font-size:11px;color:var(--muted)}
+.telegram-arrow{margin-left:auto;align-self:flex-start;color:var(--faint);font-size:18px;transition:transform .4s,color .4s}
+.telegram-preview:hover .telegram-arrow{color:var(--text);transform:translate(3px,-3px)}
+.telegram-date{display:block;margin:24px 0 9px;color:#7dc8ed;font:700 10px 'Space Grotesk',sans-serif;letter-spacing:.09em}
+.telegram-preview p{max-width:none;margin:0 0 24px;color:var(--text);font:600 15px/1.55 'DM Sans',sans-serif}
+.telegram-read{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:13px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:700}
+.telegram-read span{font-size:18px;line-height:1}
+:root[data-theme="light"] .community{background:radial-gradient(ellipse 55% 90% at 95% 5%,rgb(var(--ambient-rgb)/.1),transparent 80%),rgba(255,255,255,.54)}
+:root[data-theme="light"] .telegram-preview{background:linear-gradient(145deg,rgba(64,155,210,.08),transparent 56%),rgba(255,255,255,.62)}
+:root[data-theme="light"] .telegram-date{color:#2376a6}
+
+@media(max-width:1050px){.status-line{grid-template-columns:repeat(2,minmax(0,1fr))}.community{grid-template-columns:minmax(0,1fr) minmax(280px,42%);gap:20px;padding:27px}}
+@media(max-width:700px){.community{display:grid;grid-template-columns:1fr;gap:22px;margin-top:70px;padding:24px}.community h2 br{display:none}.community h2{font-size:34px}.telegram-preview{min-height:210px}.status-line{gap:10px}.status-line article{min-height:160px;padding:20px 16px}.status-line article::after{top:19px;right:17px}}
+@media(max-width:470px){.status-line{grid-template-columns:1fr}.status-line article{min-height:0;padding:20px 18px 22px}.status-line .status-meta{margin-bottom:14px}.community{padding:20px;border-radius:22px}.community-actions .button{flex:1}.telegram-preview{padding:18px}.community h2{font-size:31px}}
+@media(prefers-reduced-motion:reduce){.status-line .status-active::after,.telegram-avatar{animation:none}.community::before{transition:none}.community:hover::before{transform:none}}
+
+/* Reveal only after JavaScript is ready, so content stays visible without it. */
+.has-reveal .status:not(.is-visible) .status-line article,.has-reveal .community:not(.is-visible) .community-copy,.has-reveal .community:not(.is-visible) .telegram-preview{opacity:0;transform:translateY(18px)}
+.has-reveal .status-line article:nth-child(2){transition-delay:.08s}.has-reveal .status-line article:nth-child(3){transition-delay:.16s}.has-reveal .status-line article:nth-child(4){transition-delay:.24s}
+.community-copy{transition:opacity .75s ease,transform .75s cubic-bezier(.22,.72,.18,1)}
+.has-reveal .community .telegram-preview{transition:opacity .85s ease .14s,transform .85s cubic-bezier(.22,.72,.18,1) .14s,border-color .4s,box-shadow .4s}
+@media(prefers-reduced-motion:reduce){.has-reveal .status:not(.is-visible) .status-line article,.has-reveal .community:not(.is-visible) .community-copy,.has-reveal .community:not(.is-visible) .telegram-preview{opacity:1;transform:none}}
+
