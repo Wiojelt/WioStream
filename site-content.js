@@ -18,10 +18,15 @@ window.WIOSTREAM_EDIT = {
     developingTitle: 'WiojeltSpor',
     developingNote: 'VIP şifreleri eklentisi. Henüz bağlantı yok.',
     futureTitle: 'WioSpor APK + site',
-    futureNote: 'Bağımsız uygulama ve web sitesi.'
+    futureNote: 'Bağımsız uygulama ve web sitesi.',
+    channelName: 'Wioland',
+    channelHandle: '@wiolandcs3',
+    channelPreviewDate: '29 EYLÜL DUYURUSU',
+    channelPreviewText: '!megawio kodu ile tüm eklentileri tek tıkla kurabilirsiniz.'
   },
   links: {
     telegram: 'https://t.me/wiolandcs3',
+    telegramPost: 'https://t.me/wiolandcs3/26',
     email: 'mailto:josephcyute@protonmail.com',
     support: 'https://kreosus.com/wiojelt',
     cloudstreamBeta: 'https://github.com/recloudstream/cloudstream/releases',
