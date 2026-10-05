@@ -19,7 +19,7 @@
 .click-flash{position:fixed;z-index:60;width:8px;height:8px;left:0;top:0;margin:-4px 0 0 -4px;border:1px solid rgba(255,255,255,.55);border-radius:50%;pointer-events:none;animation:click-flash .6s ease-out forwards}@keyframes click-flash{to{opacity:0;transform:scale(10)}}
 
 /* Platform choice leads directly into the content. */
-main#top{padding-top:34px}.tab-bar{margin:0 0 24px;scroll-margin-top:100px}.tab{white-space:nowrap}.tab img+img{margin-left:-5px}.header-links img+img{margin-left:-12px}.button-icon{width:19px;height:19px;object-fit:contain;flex:none}
+main#top{padding-top:34px}.tab-bar{margin:0 auto 24px;scroll-margin-top:100px}.tab{white-space:nowrap}.tab img+img{margin-left:-5px}.header-links img+img{margin-left:-12px}.button-icon{width:19px;height:19px;object-fit:contain;flex:none}
 .nuvio-icon{object-fit:cover!important;object-position:left center;border-radius:0!important}
 .nuvio-symbol{display:flex;align-items:center;justify-content:center;gap:12px;transform:none}.nuvio-symbol img{width:82px;height:82px;object-fit:contain;filter:drop-shadow(0 12px 26px rgb(154 116 255/.2))}.nuvio-symbol img:last-child{width:70px;height:70px}
 .repo-url{display:flex;align-items:center;gap:7px;margin-top:10px;border:1px solid var(--line);border-radius:11px;background:var(--surface);padding:6px 7px 6px 12px}.repo-url a{min-width:0;flex:1;overflow-wrap:anywhere;color:var(--muted);font:11px/1.5 'Space Grotesk',sans-serif}.repo-link .repo-url button{margin:0;display:grid;place-items:center;flex:none;width:34px;height:34px;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);text-decoration:none;transition:border-color .2s,background .2s}.repo-link .repo-url button:hover{border-color:var(--text);background:var(--surface-strong)}.repo-url svg,.detail-link-copy svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -188,3 +188,4 @@ main#top{padding-top:34px}.tab-bar{margin:0 0 24px;scroll-margin-top:100px}.tab{
 .inline-route{color:var(--text);font-weight:650}
 .inline-route span{padding:0 2px;color:var(--faint)}
 :root[data-theme="light"] .live-mark{color:#34549c;text-shadow:none}
+
