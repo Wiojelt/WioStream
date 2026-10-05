@@ -74,3 +74,4 @@ main#top{padding-top:34px}.tab-bar{margin:0 0 24px;scroll-margin-top:100px}.tab{
 .plugin-card.is-expanded .detail-links,.plugin-card[data-name="PltStream"].is-expanded .detail-links{grid-template-columns:1fr}
 .plugin-card .card-info,.source-list span,.feature-list li,.detail-link-line{backdrop-filter:none;-webkit-backdrop-filter:none}
 @media(min-width:1051px){#panel-cloudstream .card-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(4,minmax(0,1fr))}#panel-cloudstream .card-grid:has(>.plugin-card.is-expanded)>.plugin-card:not(.is-expanded)>.card-art{height:190px}#panel-nuvio .nuvio-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card-grid{overflow-anchor:none}
