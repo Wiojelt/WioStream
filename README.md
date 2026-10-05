@@ -10,6 +10,8 @@ Canlı adres: https://wiojelt.github.io/
 
 `site-content.js` içinde varsayılan tema, duyuru, kurulum kodu, iletişim ve destek bağlantıları, durum metinleri ve kartların kısa açıklamaları bulunur. Bir kartın `repo`, `logo` veya `sources` değerini değiştirmek istersen ilgili kartın içine aynı adlarla yeni alan ekleyebilirsin. Örnek:
 
+Site her açıldığında koyu temaya döner ve altı paletten birini önceki açılıştan farklı seçer. `appearance` bölümünde `rotatePaletteOnLoad: false` yaparsan seçilen palet kalıcı olur; `rememberTheme: true` yaparsan açık/koyu tercihi de hatırlanır.
+
 ```js
 WioKids: {
   summary: 'Yeni kısa açıklama.',
@@ -27,4 +29,5 @@ python -m http.server 8765
 ```
 
 Site GitHub Pages üzerinde `Wiojelt/wiojelt.github.io` deposunun `main` dalından yayınlanır. Bu `WioStream` deposu aynı sitenin proje kopyasıdır; kendi yaptığın küçük değişiklikleri yayına almak için **wiojelt.github.io** deposunu düzenle.
+
 
