@@ -223,6 +223,6 @@ main#top{padding-top:34px}.tab-bar{margin:0 auto 24px;scroll-margin-top:100px}.t
 }
 
 /* One opened card occupies two columns; its neighbours keep their place. */
-@media(min-width:561px){.card-grid>.plugin-card.is-expanded,.nuvio-grid>.plugin-card.is-expanded{grid-column:span 2}}
+@media(min-width:561px){.card-grid,.nuvio-grid{grid-auto-flow:row dense}.card-grid>.plugin-card.is-expanded,.nuvio-grid>.plugin-card.is-expanded{grid-column:span 2}}
 @media(max-width:560px){.card-grid>.plugin-card.is-expanded,.nuvio-grid>.plugin-card.is-expanded{grid-column:1}}
 
