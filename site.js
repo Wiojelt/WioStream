@@ -44,7 +44,16 @@
   let fieldRgb = '225,231,243';
   let activeCard = null;
   const layoutAnimations = new WeakMap();
+  let cardScrollFrame = 0;
+  let priorScrollBehavior = '';
   let toastTimer;
+  const stopCardScroll = () => {
+    if (cardScrollFrame) cancelAnimationFrame(cardScrollFrame);
+    cardScrollFrame = 0;
+    root.style.scrollBehavior = priorScrollBehavior;
+  };
+  addEventListener('wheel', stopCardScroll, {passive:true});
+  addEventListener('touchstart', stopCardScroll, {passive:true});
 
   const appearance = editable.appearance || {};
   let preferredTheme = appearance.defaultTheme || 'dark';
@@ -187,6 +196,7 @@
     if (!expanded && activeCard === card) activeCard = null;
   }
   function toggleCard(card) {
+    stopCardScroll();
     const grid = card.parentElement;
     const cards = [...grid.querySelectorAll(':scope > .plugin-card')];
     cards.forEach(item => layoutAnimations.get(item)?.cancel());
@@ -195,6 +205,7 @@
     if (activeCard && activeCard !== card) setExpanded(activeCard, false);
     setExpanded(card, expanding);
     activeCard = expanding ? card : null;
+    const expandedLayoutTop = card.getBoundingClientRect().top;
     if (!reduced) {
       cards.forEach(item => {
         const oldRect = before.get(item);
@@ -219,6 +230,29 @@
           }
         };
       });
+    }
+    if (expanding && !document.hidden) {
+      const oldTop = before.get(card).top;
+      const keepTop = Math.min(Math.max(oldTop, header.getBoundingClientRect().bottom + 18), innerHeight * .55);
+      const moved = Math.abs(expandedLayoutTop - oldTop) > 2;
+      if (moved) {
+        priorScrollBehavior = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+        if (reduced) {
+          scrollBy(0, card.getBoundingClientRect().top - keepTop);
+          root.style.scrollBehavior = priorScrollBehavior;
+        } else {
+          const startTime = performance.now();
+          const followCard = () => {
+            if (activeCard !== card || document.hidden) { stopCardScroll(); return; }
+            const delta = card.getBoundingClientRect().top - keepTop;
+            if (Math.abs(delta) > .5) scrollBy(0, delta);
+            if (performance.now() - startTime < 1120) cardScrollFrame = requestAnimationFrame(followCard);
+            else stopCardScroll();
+          };
+          cardScrollFrame = requestAnimationFrame(followCard);
+        }
+      }
     }
   }
   document.querySelectorAll('.plugin-card').forEach((card, index) => {
