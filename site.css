@@ -225,4 +225,15 @@ main#top{padding-top:34px}.tab-bar{margin:0 auto 24px;scroll-margin-top:100px}.t
 /* One opened card occupies two columns; its neighbours keep their place. */
 @media(min-width:561px){.card-grid,.nuvio-grid{grid-auto-flow:row dense}.card-grid>.plugin-card.is-expanded,.nuvio-grid>.plugin-card.is-expanded{grid-column:span 2}}
 @media(max-width:560px){.card-grid>.plugin-card.is-expanded,.nuvio-grid>.plugin-card.is-expanded{grid-column:1}}
+@media(min-width:1051px){
+  #panel-cloudstream .card-grid:has(>.plugin-card.is-expanded:not(:last-child))>.plugin-card:last-child:not(.is-expanded){
+    grid-column:1/-1;display:grid;grid-template-columns:250px minmax(0,1fr);min-height:220px;
+  }
+  #panel-cloudstream .card-grid:has(>.plugin-card.is-expanded:not(:last-child))>.plugin-card:last-child:not(.is-expanded)>.card-art{height:220px}
+  #panel-cloudstream .card-grid:has(>.plugin-card.is-expanded:not(:last-child))>.plugin-card:last-child:not(.is-expanded)>.card-info{
+    min-height:220px;justify-content:center;border-top:0;border-left:1px solid var(--line);padding:25px 30px;
+  }
+  #panel-cloudstream .card-grid:has(>.plugin-card.is-expanded:not(:last-child))>.plugin-card:last-child:not(.is-expanded)>.card-detail{grid-column:1/-1}
+  #panel-nuvio .nuvio-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 
