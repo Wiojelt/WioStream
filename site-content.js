@@ -3,7 +3,9 @@
 window.WIOSTREAM_EDIT = {
   appearance: {
     defaultTheme: 'dark', // 'dark' veya 'light'
-    defaultPalette: 'mono' // mono, iris, coffee, tide, ember, undertow
+    rememberTheme: false, // Her açılışta koyu temaya dön
+    defaultPalette: 'mono', // mono, iris, coffee, tide, ember, undertow
+    rotatePaletteOnLoad: true // Her açılışta son renkten farklı bir palet seç
   },
   text: {
     announcementTitle: 'TurkSinema ve TurkSpor kapandı.',
@@ -37,3 +39,4 @@ window.WIOSTREAM_EDIT = {
     PltStream: {summary: 'İçerik kaynağı kapandı; araçları sürüyor.'}
   }
 };
+
