@@ -17,7 +17,6 @@
 @media(max-width:470px){.shell{width:calc(100% - 24px)}.header-links a{padding:7px}.header-links img,.header-links svg{width:17px;height:17px}.brand span{font-size:16px}.brand img{width:31px;height:31px}.intro{min-height:218px}.intro h1{font-size:55px}.intro p{font-size:13px}.tab{padding:0 10px;font-size:12px;gap:7px}.tab img{width:20px;height:20px}.tab span{font-size:10px}.old-note{font-size:11px}.section-caption{display:block}.section-caption p{text-align:left;max-width:none;margin-top:6px}.card-grid,.nuvio-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card-art,.nuvio-grid .card-art{height:140px}.card-info{min-height:159px;padding:12px}.card-kicker{font-size:8px}.card-info h3{font-size:17px}.card-info p{font-size:11px}.card-open{font-size:10px}.live-mark{font-size:18px;gap:7px}.live-play{width:44px;height:44px;border-radius:14px;font-size:16px}.community{align-items:flex-start;flex-direction:column}.dialog-shell{padding:20px}.dialog-top img{width:77px;height:77px}.dialog-top h2{font-size:26px}.dialog-top p{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 .click-flash{position:fixed;z-index:60;width:8px;height:8px;left:0;top:0;margin:-4px 0 0 -4px;border:1px solid rgba(255,255,255,.55);border-radius:50%;pointer-events:none;animation:click-flash .6s ease-out forwards}@keyframes click-flash{to{opacity:0;transform:scale(10)}}
-.archive-logo{display:block;width:30px;height:30px;object-fit:contain;margin-top:10px;opacity:.8}
 
 /* Platform choice leads directly into the content. */
 main#top{padding-top:34px}.tab-bar{margin:0 0 24px;scroll-margin-top:100px}.tab{white-space:nowrap}.tab img+img{margin-left:-5px}.header-links img+img{margin-left:-12px}.button-icon{width:19px;height:19px;object-fit:contain;flex:none}
@@ -76,3 +75,23 @@ main#top{padding-top:34px}.tab-bar{margin:0 0 24px;scroll-margin-top:100px}.tab{
 @media(min-width:1051px){#panel-cloudstream .card-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(4,minmax(0,1fr))}#panel-cloudstream .card-grid:has(>.plugin-card.is-expanded)>.plugin-card:not(.is-expanded)>.card-art{height:190px}#panel-nuvio .nuvio-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(2,minmax(0,1fr))}}
 .card-grid{overflow-anchor:none}
 .plugin-card.is-expanded{order:0}@media(min-width:1051px){#panel-cloudstream .card-grid:has(>.plugin-card.is-expanded),#panel-nuvio .nuvio-grid:has(>.plugin-card.is-expanded){grid-template-columns:repeat(3,minmax(0,1fr))}#panel-cloudstream .card-grid:has(>.plugin-card.is-expanded)>.plugin-card:not(.is-expanded)>.card-art{height:215px}}
+
+/* Let the card, its content, and the surrounding layout settle together. */
+.plugin-card .card-art{
+  transition:height 1.08s cubic-bezier(.22,.72,.18,1),background .9s ease;
+}
+.plugin-card .card-art img{
+  transition:transform 1.08s cubic-bezier(.22,.72,.18,1),filter .85s ease;
+}
+.plugin-card .card-info h3,.plugin-card .card-info p,.plugin-card .card-kicker{
+  transition:transform 1.02s cubic-bezier(.22,.72,.18,1),opacity .85s ease;
+}
+.plugin-card>.card-detail{
+  transition:grid-template-rows 1.08s cubic-bezier(.22,.72,.18,1),border-color .7s ease;
+}
+.card-detail-content{
+  transition:opacity .9s ease,transform 1.08s cubic-bezier(.22,.72,.18,1);
+}
+.plugin-card.is-expanded .card-detail-content{transition-delay:.12s,.04s}
+.plugin-card .card-open span{transition:transform .7s cubic-bezier(.22,.72,.18,1),background .7s ease}
+.platform-panel{animation-duration:.7s}
