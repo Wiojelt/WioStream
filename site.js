@@ -11,6 +11,7 @@
   const toast = document.querySelector('#toast');
   let fieldRgb = '225,231,243';
   let activeCard = null;
+  const layoutAnimations = new WeakMap();
   let toastTimer;
 
   try { if (localStorage.getItem('wiostream-theme-v2') === 'light') root.dataset.theme = 'light'; } catch (_) {}
@@ -137,10 +138,43 @@
     if (!expanded && activeCard === card) activeCard = null;
   }
   function toggleCard(card) {
+    const grid = card.parentElement;
+    const cards = [...grid.querySelectorAll(':scope > .plugin-card')];
+    cards.forEach(item => layoutAnimations.get(item)?.cancel());
+    const before = new Map(cards.map(item => [item, item.getBoundingClientRect()]));
     const expanding = !card.classList.contains('is-expanded');
     if (activeCard && activeCard !== card) setExpanded(activeCard, false);
     setExpanded(card, expanding);
     activeCard = expanding ? card : null;
+    if (!reduced) {
+      cards.forEach(item => {
+        const oldRect = before.get(item);
+        const newRect = item.getBoundingClientRect();
+        const dx = oldRect.left - newRect.left;
+        const dy = oldRect.top - newRect.top;
+        const widthChange = item === card && expanding && newRect.width > oldRect.width + 30;
+        if (Math.abs(dx) < 2 && Math.abs(dy) < 2 && !widthChange) return;
+        const start = {translate: `${dx}px ${dy}px`};
+        const end = {translate: '0px 0px'};
+        if (widthChange) {
+          start.clipPath = `inset(0 ${Math.max(0, (1 - oldRect.width / newRect.width) * 100)}% 0 0 round 22px)`;
+          end.clipPath = 'inset(0 0 0 0 round 22px)';
+        }
+        item.style.willChange = 'translate, clip-path';
+        const animation = item.animate([start, end], {duration:620, easing:'cubic-bezier(.18,.74,.2,1)'});
+        layoutAnimations.set(item, animation);
+        animation.onfinish = animation.oncancel = () => {
+          if (layoutAnimations.get(item) === animation) {
+            layoutAnimations.delete(item);
+            item.style.willChange = '';
+          }
+        };
+      });
+    }
+    if (expanding) {
+      const gridTop = grid.getBoundingClientRect().top + scrollY;
+      scrollTo({top:Math.max(0, gridTop - 84), behavior:reduced ? 'auto' : 'smooth'});
+    }
   }
   document.querySelectorAll('.plugin-card').forEach((card, index) => {
     const button = card.querySelector('.card-open');
@@ -184,7 +218,7 @@
     }
     if (event.key === 'Escape' && activeCard) {
       const button = activeCard.querySelector('.card-open');
-      setExpanded(activeCard, false);
+      toggleCard(activeCard);
       button.focus({preventScroll:true});
     }
   });
@@ -244,13 +278,13 @@
       const cursorDistance=Math.hypot(p.x-mouse.x,p.y-mouse.y);
       const boost=Math.max(0,1-cursorDistance/170);
       ctx.beginPath();ctx.arc(p.x,p.y,p.r+boost*.8,0,Math.PI*2);
-      ctx.fillStyle=`rgba(${rgb},${.22+boost*.56})`;ctx.fill();
+      ctx.fillStyle=`rgba(${rgb},${.3+boost*.56})`;ctx.fill();
       for(let j=i+1;j<points.length;j++){
         const q=points[j];const distance=Math.hypot(p.x-q.x,p.y-q.y);
         if(distance>130)continue;
         const near=Math.max(0,1-Math.min(cursorDistance,Math.hypot(q.x-mouse.x,q.y-mouse.y))/210);
         ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
-        ctx.strokeStyle=`rgba(${rgb},${(.025+near*.17)*(1-distance/130)})`;ctx.lineWidth=.8;ctx.stroke();
+        ctx.strokeStyle=`rgba(${rgb},${(.048+near*.2)*(1-distance/130)})`;ctx.lineWidth=.8;ctx.stroke();
       }
       if(boost>.1){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle=`rgba(${rgb},${boost*.12})`;ctx.lineWidth=.7;ctx.stroke();}
     }
