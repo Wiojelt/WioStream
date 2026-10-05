@@ -303,6 +303,18 @@
   });
   document.querySelector('#year').textContent = new Date().getFullYear();
 
+  if (!reduced && 'IntersectionObserver' in window) {
+    document.body.classList.add('has-reveal');
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, {threshold:.08, rootMargin:'0px 0px -32px 0px'});
+    document.querySelectorAll('.status,.community').forEach(section => revealObserver.observe(section));
+  }
+
   let pointerFrame = 0;
   document.addEventListener('pointermove', event => {
     if (event.pointerType === 'touch') return;
